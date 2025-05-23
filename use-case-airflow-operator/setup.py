@@ -4,8 +4,8 @@ from setuptools import setup
 
 setup(
     name='firecrest_airflow_operators',
-    version='1.0.0',
+    version='2.0.0',
     py_modules=['firecrest_airflow_operators'],
-    url='https://github.com/eth-cscs/firecrest-training-2023/tree/main/use-case-airflow-operator',
-    description='Airflow Operators based on FirecREST'
+    url='https://eth-cscs.github.io/firecrest-v2/use_cases/workflow-orchestrator',
+    description='Airflow Operators based on FirecREST-v2'
 )
