@@ -8,7 +8,7 @@
 
 - [FirecREST at CSCS](https://eth-cscs.github.io/cscs-docs/services/firecrest/#firecrest)
 - [FirecREST Documentation](https://eth-cscs.github.io/firecrest-v2/)
-- [pyFirecREST](https://pyfirecrest.readthedocs.io/en/stable/reference.html)
+- [pyFirecREST](https://pyfirecrest.readthedocs.io/)
 
 ## Use Cases
 
