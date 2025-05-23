@@ -28,11 +28,10 @@ Even if you have experience with another programming language, you'll likely fin
     - The workflows will be disabled by default in your repo so go ahead and enable them in the "Actions" tab of your repository.
 
     Replace `your-username` and `your-repository` with your GitHub username and the name of the repository you forked.
-
 1. **Inspect the code that will be tested:**
-    Take a moment to review the code in the `dist` folder. This is the code that will be tested in the CI/CD pipeline.
+    Take a moment to review the code in the `mylib` folder. This is the code that will be tested in the CI/CD pipeline.
 
-    <!-- TODO! This can change until the course, depending on what we will end up testing. -->
+    Right now there is nothing meaningful there, but you should add your own tests.
 
 1. **Configure CI/CD Pipeline:**
     - Open the CI configuration file (`.github/workflows/ci.yml`) and, with the help of the comments, try to understand the different steps that are already configured.
@@ -50,7 +49,7 @@ Even if you have experience with another programming language, you'll likely fin
 
 ## Additional Resources
 
-- [OIDC Dashboard](https://oidc-dashboard-prod.cscs.ch/)
+- [Client portal](https://developer.cscs.ch)
 - [pyFirecrest documentation](https://pyfirecrest.readthedocs.io)
 - [How to set up secrets in Github Actions](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions)
-- [FirecREST documentation](https://firecrest.readthedocs.io)
+- [FirecREST v2](https://eth-cscs.github.io/firecrest-v2/)
