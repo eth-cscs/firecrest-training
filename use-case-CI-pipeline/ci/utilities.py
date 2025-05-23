@@ -1,7 +1,15 @@
+#
+#  Copyright (c) 2025, ETH Zurich. All rights reserved.
+#
+#  Please, refer to the LICENSE file in the root directory.
+#  SPDX-License-Identifier: BSD-3-Clause
+#
 
 
-def create_batch_script(repo, constraint, num_nodes=1, account=None, custom_modules=None, branch="main"):
-    script =f"""#!/bin/bash -l
+def create_batch_script(
+    repo, num_nodes=1, account=None, custom_modules=None, branch="main", constraint=None
+):
+    script = f"""#!/bin/bash -l
 #SBATCH --job-name="ci_job"
 #SBATCH --output=job.out
 #SBATCH --error=job.err
@@ -17,8 +25,12 @@ def create_batch_script(repo, constraint, num_nodes=1, account=None, custom_modu
 
     script += f"""
 
+# Clone command will fail if the directory already exists
+# Remove this first if you are using the same working directory
+# every time
+# rm -rf firecrest-ci
 git clone -b {branch} {repo} firecrest-ci
-cd firecrest-ci/use-case-CI-pipeline
+cd firecrest-ci
 """
 
     if custom_modules:
@@ -32,9 +44,9 @@ python -m pip install -r requirements.txt
 
 python --version
 
-srun python -m timeit --setup='import dist; import numpy as np; \
+srun python -m timeit --setup='import mylib; import numpy as np; \
     p = np.arange(1000); q = np.arange(1000) + 2' \
-    'dist.simple_numpy_dist(p, q)'
+    'mylib.simple_numpy_dist(p, q)'
 """
 
     return script

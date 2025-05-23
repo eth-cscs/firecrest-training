@@ -1,3 +1,9 @@
+#
+#  Copyright (c) 2025, ETH Zurich. All rights reserved.
+#
+#  Please, refer to the LICENSE file in the root directory.
+#  SPDX-License-Identifier: BSD-3-Clause
+#
 name: CI
 
 # Controls when the workflow will run
@@ -29,7 +35,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.7'
+          python-version: '3.8'
 
       - name: install python packages
         run: |
@@ -42,4 +48,5 @@ jobs:
           FIRECREST_CLIENT_SECRET: ${{ secrets.F7T_CLIENT_SECRET }}
           FIRECREST_URL: ${{ secrets.F7T_URL }}
           AUTH_TOKEN_URL: ${{ secrets.F7T_TOKEN_URL }}
-        run: python use-case-CI-pipeline/ci/ci_script.py --system=${{ matrix.system_name }} --branch=${{ github.ref_name }} --repo=${{ github.server_url }}/${{ github.repository }}.git --account=class08
+          SYSTEM_WORKING_DIR: ${{ vars.F7T_SYSTEM_WORKING_DIR }}
+        run: python use-case-CI-pipeline/ci/ci_script.py --system=${{ matrix.system_name }} --branch=${{ github.ref_name }} --repo=${{ github.server_url }}/${{ github.repository }}.git --account=csstaff
