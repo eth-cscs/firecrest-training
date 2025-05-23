@@ -1,13 +1,13 @@
-# FirecREST Hackathon (03.10.2023)
+# FirecREST Hackathon (28.05.2025)
 
 ## Slides
 
-- [PDF - FirecREST Training 2023](slides/FirecREST-Training-2023.pdf)
+- TODO
 
 ## Documentation
 
-- [FirecREST API](https://firecrest-api.cscs.ch)
-- [FirecREST Read The Docs](https://firecrest.readthedocs.io/en/latest/)
+- [FirecREST at CSCS](https://eth-cscs.github.io/cscs-docs/services/firecrest/#firecrest)
+- [FirecREST Documentation](https://eth-cscs.github.io/firecrest-v2/)
 - [pyFirecREST](https://pyfirecrest.readthedocs.io/en/stable/reference.html)
 
 ## Use Cases
