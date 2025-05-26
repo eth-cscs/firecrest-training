@@ -11,17 +11,16 @@ Operators are defined as units of work for Airflow to complete. Custom operators
 We only need to define the arguments specific to our logic and the `execute` function that will use [PyFirecrest](https://pyfirecrest.readthedocs.io/en/stable/) to submit the jobs as well as for transfering files to and from the HPC facilities.
 Our operators will look something like this
 
-!!! example "Setting up FirecREST Custom Operator"
-    ```python
-    class FirecRESTCustomOperator(BaseOperator):
-        def init(self, arg1, arg2, **kwargs):
-            super().__init__(**kwargs)
-            self.arg1 = arg1
-            self.arg2 = arg2
+```python
+class FirecRESTCustomOperator(BaseOperator):
+    def init(self, arg1, arg2, **kwargs):
+        super().__init__(**kwargs)
+        self.arg1 = arg1
+        self.arg2 = arg2
 
-        def execute(self, context):
-            # pyfirecrest operations
-    ```
+    def execute(self, context):
+        # pyfirecrest operations
+```
 
 If this was an operator to submit a job, `arg1` and `arg2` would be the name of the system and the batch script to submit a Slurm job.
 
@@ -29,75 +28,69 @@ If this was an operator to submit a job, `arg1` and `arg2` would be the name of 
 
 We can export as environment variables the credentials that FirecREST will use and read them within our operators.
 
-!!! example "Exporting up FirecREST credentials"
-    ```bash
-    export FIRECREST_CLIENT_ID=<client-id>
-    export FIRECREST_CLIENT_SECRET=<client-secret>
-    export AUTH_TOKEN_URL=https://<token-url>
-    export FIRECREST_URL=https://<firecrest-url>
-    ```
+ ```bash
+ export FIRECREST_CLIENT_ID=<client-id>
+ export FIRECREST_CLIENT_SECRET=<client-secret>
+ export AUTH_TOKEN_URL=https://<token-url>
+ export FIRECREST_URL=https://<firecrest-url>
+ ```
 
 ## Installing Apache Airflow
 
 We are going to run Airflow in our personal computers. We recommend to install it on a virtual environment.
 You just need to do the following:
 
-!!! example "Setting up Python virtual environment"
-    ```bash
-    python -m venv .demo-env
-    source .demo-env/bin/activate
-    pip install apache-airflow pyfirecrest==3.0.1
-    ```
+```bash
+python -m venv .demo-env
+source .demo-env/bin/activate
+pip install apache-airflow pyfirecrest==3.0.1
+```
 
 ### Launching Airflow
 
 Before launching Airflow, we need to initialize it's database
 
-!!! example "Launching Airflow demo"
-    ```bash
-    export AIRFLOW_HOME=$HOME/airflow-demo
-    airflow db migrate
-    ```
+```bash
+export AIRFLOW_HOME=$HOME/airflow-demo
+airflow db migrate
+```
 
 Airflow comes with many examples that show up in the dashboard. You can set `load_examples = False` in your `$AIRFLOW_HOME/airflow.cfg` configuration file to start Airflow with a clean dashboard.
 
 Let's launch Airflow in *standalone* mode (only suitable for developing/testing)
 
-!!! example "Running Airflow in "standalone" mode"
-    ```bash
-    airflow standalone
-    ```
+```bash
+airflow standalone
+```
 
 When Airflow standalone starts, it creates an `admin` user and generates credentials to login in the dashboard at [http://127.0.0.1:8080](http://127.0.0.1:8080).
 
 This password is set on `$AIRFLOW_HOME/standalone_admin_password.txt`
 
-!!! info
-    If you want to change the port where Airflow is running, edit the file `$AIRFLOW_HOME/airflow.cfg` and set the `webserver_port` variable under the `[api]` section to a different port number
-    ```cfg
-    [api]
-    (...)
-    web_server_port = 9090
-    (...)
-    ```
+If you want to change the port where Airflow is running, edit the file `$AIRFLOW_HOME/airflow.cfg` and set the `webserver_port` variable under the `[api]` section to a different port number
+```cfg
+[api]
+(...)
+web_server_port = 9090
+(...)
+```
 
-    And then launch `airflow standalone`
+And then launch `airflow standalone`
 
 You can find them (username and password) by the end of the initialization message.
 It looks like this:
 
-!!! example "Airflow initialization logs"
-    ```log
-    standalone | Starting Airflow Standalone
-    standalone | Checking database is initialized
-    INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
-    INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
-    INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
-    INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
-    WARNI [airflow.models.crypto] empty cryptography key - values will not be stored encrypted.
-    standalone | Database ready
-    (...)
-    ```
+```log
+standalone | Starting Airflow Standalone
+standalone | Checking database is initialized
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+WARNI [airflow.models.crypto] empty cryptography key - values will not be stored encrypted.
+standalone | Database ready
+(...)
+```
 
 The password can be found as well in `$AIRFLOW_HOME/standalone_admin_password.txt`.
 
@@ -125,11 +118,10 @@ For this example, we are going to simulate the creation of the new structure by 
 
 To see the DAG on Airflow's dashboard we must copy the file to `$AIRFLOW_HOME/dags`:
 
-!!! example "Copying DAG files to local environment"
-    ```bash
-    mkdir $AIRFLOW_HOME/dags
-    cp airflow-dag.py $AIRFLOW_HOME/dags
-    ```
+```bash
+mkdir $AIRFLOW_HOME/dags
+cp airflow-dag.py $AIRFLOW_HOME/dags
+```
 
 It will show up with the name `firecrest_example` after some seconds / refreshing the page.
 
@@ -142,10 +134,9 @@ The file [firecrest_airflow_operators.py](./firecrest_airflow_operators.py) has 
 
 For Airflow to see our module, the file must be in the `$PYTHONPATH`. You can install it with:
 
-!!! example "Install Airflow module"
-    ```bash
-    cd workflow-orchestrator/
-    pip install .
-    ```
+```bash
+cd workflow-orchestrator/
+pip install .
+```
 
 Remember to refresh the application in the browser or restart Airflow if changes are not applied.
