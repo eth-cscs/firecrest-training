@@ -125,8 +125,6 @@ cp airflow-dag.py $AIRFLOW_HOME/dags
 
 It will show up with the name `firecrest_example` after some seconds / refreshing the page.
 
-![airflow_example](../../assets/img/use_cases_workflow_mgr.png)
-
 You can click on it and browse the different tabs such as *Graph*.
 The execution of the DAG can be triggered by clicking on the *Play* button at the right hand side of the dashboard next to the tabs.
 
