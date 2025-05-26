@@ -160,6 +160,7 @@ class FirecRESTUploadOperator(FirecRESTBaseOperator):
         super().__init__(**kwargs)
         self.system = system
         self.source_path = source_path
+        self.filename = os.path.basename(source_path)
         self.target_path = target_path
 
     def execute(self, context):
@@ -167,4 +168,5 @@ class FirecRESTUploadOperator(FirecRESTBaseOperator):
             self.system,
             self.source_path,
             self.target_path,
+            self.filename
         )
