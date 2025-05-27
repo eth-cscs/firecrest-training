@@ -1,14 +1,18 @@
+#
+#  Copyright (c) 2025, ETH Zurich. All rights reserved.
+#
+#  Please, refer to the LICENSE file in the root directory.
+#  SPDX-License-Identifier: BSD-3-Clause
+#
 import tempfile
 import os
 import threading
-from typing import Union
 
 from flask import (Flask, g, render_template, request, jsonify, session)
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 from flask_session import Session
 
 from flask_bootstrap import Bootstrap5
-from werkzeug.utils import secure_filename
 from flask_sslify import SSLify
 
 import jinja2
@@ -19,7 +23,6 @@ from logging.handlers import TimedRotatingFileHandler
 import firecrest as f7t
 
 from config import DevConfig
-
 
 
 def create_app():
@@ -38,8 +41,8 @@ app = create_app()
 async_mode = "threading"
 socketio = SocketIO(app, async_mode=async_mode)
 
-sslify = SSLify(app) # SSL support
-bootstrap = Bootstrap5(app) # bootstrap support
+sslify = SSLify(app)  # SSL support
+bootstrap = Bootstrap5(app)  # bootstrap support
 
 try:
 
@@ -55,10 +58,8 @@ try:
 
     SYSTEM_NAME = app.config["SYSTEM_NAME"]
     SYSTEM_PARTITIONS = app.config["SYSTEM_PARTITIONS"]
-    SYSTEM_CONSTRAINTS = app.config["SYSTEM_CONSTRAINTS"]
     SYSTEM_RESERVATION = app.config["SYSTEM_RESERVATION"]
     USER_GROUP = app.config["USER_GROUP"]
-
 
     PROBLEM_SUBDIR = app.config["PROBLEM_SUBDIR"]
     PROBLEM_INI_FILE = app.config["PROBLEM_INI_FILE"]
@@ -78,9 +79,12 @@ SYSTEM_BASE_DIR = None
 
 authN = f7t.ClientCredentialsAuth(OIDC_CLIENT_ID, OIDC_CLIENT_SECRET, OIDC_AUTH_TOKEN_URL)
 
-f7t_client = f7t.Firecrest(
-    firecrest_url=FIRECREST_URL, authorization=authN
+f7t_client = f7t.v2.Firecrest(
+    firecrest_url=FIRECREST_URL, authorization=authN, verify=False
 )
+
+f7t_client.MAX_DIRECT_UPLOAD_SIZE = 5242880
+
 
 def is_system_avail_f7t(system_name: str) -> bool:
     '''
@@ -88,12 +92,13 @@ def is_system_avail_f7t(system_name: str) -> bool:
         - Description:
            This function should return `True` if the `system_name` is available, otherwise `False`
         - Params:
-          - `system_name`: str          
+          - `system_name`: str
         - Returns:
           - `bool`
     '''
 
     return False
+
 
 def list_files_with_f7t(system_name: str, target_path: str) -> list:
     '''
@@ -111,7 +116,6 @@ def list_files_with_f7t(system_name: str, target_path: str) -> list:
     return None
 
 
-
 def get_username_with_f7t(system_name):
     '''
         - Name: `get_username_with_f7t`
@@ -126,6 +130,7 @@ def get_username_with_f7t(system_name):
 
     return None
 
+
 def get_base_fs_with_f7t(system_name: str) -> str:
     '''
         - Name: `get_avail_fs_with_f7t`
@@ -136,17 +141,17 @@ def get_base_fs_with_f7t(system_name: str) -> str:
         - Returns:
           - `None`
     '''
-    
 
     return None
 
 
-def submit_job_with_f7t(system_name: str, job_script: str) -> dict:
+def submit_job_with_f7t(system_name: str, working_dir: str,
+                        job_script: str) -> dict:
 
     '''
         - Name: `submit_job_with_f7t`
         - Description: submit a job in a given `system_name` for a given sbatch path in `job_script`
-          - If the job was submitted correctly should return a dictionary : `{"job": job_information, "error": 0}`
+          - If the job was submitted correctly should return a dictionary : `{"job": firecrest.types.JobSubmit, "error": 0}`
           - If the job couldn't be submitted should return a dictionary : `{"job": "error description", "error": 1}`
         - Params:
           - `system_name`: str
@@ -183,7 +188,7 @@ def list_jobs_with_f7t(system_name: str, job_ids: list[int]) -> dict:
     - Description: list queued and passed (completed, cancelled, pending, etc) 
     in a specific `system_name` and filtered by a specific list of job IDs (`job_ids`)
 
-    If the job_ids list is empty return {"jobs":[], "error": 0}, 
+    If the job_ids list is empty return {"jobs":[], "error": 0},
     otherwise a list of `firecrest.types.JobQueue`
       
     - Parameters:
@@ -191,23 +196,23 @@ def list_jobs_with_f7t(system_name: str, job_ids: list[int]) -> dict:
       - `job_ids`: list[int]
 
     - Returns
-      - dict: {"jobs": firecrest.types.JobQueue | [], "error": int}
+      - dict: {"jobs": Union[firecrest.types.JobQueue | list [] ], "error": int}
     '''
 
-    
-    return []
+    return {"jobs": [], "error": 0}
+
 
 def mkdir(jobName):
 
     username = get_username_with_f7t(SYSTEM_NAME)
-    if username == None:
-        return {"error": 1, "msg":f"Error creating directory: couldn't get username"}
+    if username is None:
+        return {"error": 1, "msg": "Error creating directory: couldn't get username"}
 
     targetPath = f"{SYSTEM_BASE_DIR}/{username}/{PROBLEM_SUBDIR}/{jobName}"
     if DEBUG:
         app.logger.debug(f"targetPath: {targetPath}")
 
-    if mkdir_with_f7t(SYSTEM_NAME,targetPath):
+    if mkdir_with_f7t(SYSTEM_NAME, targetPath):
         return {"error": 0, "msg": f"Directory {targetPath} created"}
 
     return {"error": 1, "msg":f"Error creating directory {targetPath}"}
@@ -216,17 +221,18 @@ def mkdir(jobName):
 @app.route("/list_files", methods=["GET"])
 def list_files():
 
-    targetPath = request.args.get('path',None)
+    targetPath = request.args.get('path', None)
 
-    if targetPath == None:
+    if targetPath is None:
         return jsonify(rows=[]), 400
 
     files = list_files_with_f7t(SYSTEM_NAME, targetPath)
 
-    if files == None:
+    if files is None:
         return jsonify(rows=[]), 400
 
     return jsonify(rows=files), 200
+
 
 @app.route("/list_jobs", methods=["GET"])
 def list_jobs():
@@ -240,7 +246,6 @@ def list_jobs():
 
     if f7t_jobs["error"] == 0:
         return {"rows": f7t_jobs["jobs"]}
-    
 
     return jsonify(response="Error listing jobs"), 400
 
@@ -253,16 +258,17 @@ def results():
     try:
 
         resultImage = f"{session['jobDir']}/imag.gif"
-        targetPath=f"/app/src/static/{POST_JOB_ID}.gif"
+        targetPath = f"/app/src/static/{POST_JOB_ID}.gif"
         imgPath = f"/static/{POST_JOB_ID}.gif"
 
         if DEBUG:
             app.logger.debug(f"source_path: {resultImage}")
             app.logger.debug(f"target_path: {targetPath}")
 
-        dwn = f7t_client.simple_download(machine=SYSTEM_NAME,
-                                         source_path=resultImage,
-                                         target_path=targetPath)
+        dwn = f7t_client.download(SYSTEM_NAME,
+                                  source_path=resultImage,
+                                  target_path=targetPath,
+                                  account=USER_GROUP)
 
         return jsonify(data=imgPath), 200
 
@@ -277,9 +283,10 @@ def results():
         return jsonify(data=f"Download error: {e}"), 400
 
 
-def write_sbatch(jobTemplate, jobName="f7t_test", ntasks=1, account=None, partition=None,
-                constraint=None,reservation=None,jobDir=None, problem_ini_file=None, problem_msh_file=None,step=1,lastJobId=None):
-
+def write_sbatch(jobTemplate, jobName="f7t_test", ntasks=1, account=None,
+                 partition=None, constraint=None, reservation=None,
+                 jobDir=None, problem_ini_file=None, problem_msh_file=None,
+                 step=1, lastJobId=None):
     try:
         # sbatch templates directory
         basePath = os.path.abspath(os.path.dirname(__file__))
@@ -304,7 +311,6 @@ def write_sbatch(jobTemplate, jobName="f7t_test", ntasks=1, account=None, partit
             app.logger.error(f"Error: {e}")
         return {"error": 1, "msg":"Couldn't create sbatch file"}
 
-
     try:
         # creating temp sbatch file in client to upload in SYSTEM_NAME
         td = tempfile.mkdtemp(prefix="job")
@@ -316,9 +322,18 @@ def write_sbatch(jobTemplate, jobName="f7t_test", ntasks=1, account=None, partit
 
         with open(sbatch_file_path, "w") as sf:
             # replace templates variables with values
-            sf.write(jinja_template.render(jobName=jobName, partition=partition, account=account,
-                                     constraint=constraint, reservation=reservation, lastJobId=lastJobId, ntasks=ntasks, step=step, 
-                                     jobDir=jobDir, problem_ini_file=problem_ini_file, problem_msh_file=problem_msh_file))
+            sf.write(jinja_template.render(jobName=jobName,
+                                           partition=partition,
+                                           account=account,
+                                           constraint=constraint,
+                                           reservation=reservation,
+                                           lastJobId=lastJobId,
+                                           ntasks=ntasks,
+                                           step=step,
+                                           jobDir=jobDir,
+                                           problem_ini_file=problem_ini_file,
+                                           problem_msh_file=problem_msh_file)
+                                        )
 
         if DEBUG:
             app.logger.info(f"Created file: {sbatch_file_path}")
@@ -326,28 +341,25 @@ def write_sbatch(jobTemplate, jobName="f7t_test", ntasks=1, account=None, partit
     except IOError as ioe:
         if DEBUG:
             app.logger.debug(ioe.message)
-        return {"error": 1, "msg":"Couldn't create sbatch file"}
+        return {"error": 1, "msg": "Couldn't create sbatch file"}
 
     except Exception as e:
         if DEBUG:
             app.logger.error(e)
             app.logger.error(type(e))
-        return {"error": 1, "msg":"Couldn't create sbatch file"}
+        return {"error": 1, "msg": "Couldn't create sbatch file"}
+    return {"error": 0, "path": sbatch_file_path}
 
 
-    return {"error": 0, "path":sbatch_file_path}
-
-
-def background_submit_postproc(jobTemplate,jobName,ntasks,partition,constraint,reservation,targetPath, 
-                           problem_ini_file, problem_msh_file):
+def background_submit_postproc(jobTemplate, jobName, ntasks, partition,
+                               constraint, reservation, targetPath,
+                               problem_ini_file, problem_msh_file):
     
     global JOB_LIST
     global POST_JOB_ID
     
     try:
-
         # write sbatch file using the jobTemplate
-
         res = write_sbatch(jobTemplate=jobTemplate, jobName=f"{jobName}_post",ntasks=ntasks,account=USER_GROUP, partition=partition,
                 constraint=constraint, reservation=reservation, jobDir=targetPath, problem_ini_file=problem_ini_file, problem_msh_file=problem_msh_file)
     except Exception as e:
@@ -359,7 +371,10 @@ def background_submit_postproc(jobTemplate,jobName,ntasks,partition,constraint,r
     
     # if the sbatch writing worked, then continue submitting jobs
     job_script = res["path"]
-    job_submitted = submit_job_with_f7t(system_name=SYSTEM_NAME, job_script=job_script)
+    job_submitted = submit_job_with_f7t(system_name=SYSTEM_NAME,
+                                        working_dir=targetPath,
+                                        job_script=job_script)
+    
 
     if job_submitted["error"] == 1:
 
@@ -368,10 +383,10 @@ def background_submit_postproc(jobTemplate,jobName,ntasks,partition,constraint,r
 
     job = job_submitted["job"]
 
-    socketio.emit("success", {"data":f"Job {jobName}_post submitted correctly (jobid: {job['jobid']})"})
+    socketio.emit("success", {"data":f"Job {jobName}_post submitted correctly (jobid: {job['jobId']})"})
 
-    POST_JOB_ID = job["jobid"]
-    JOB_LIST[job["jobid"]] = job_submitted["error"]
+    POST_JOB_ID = job["jobId"]
+    JOB_LIST[job["jobId"]] = job_submitted["error"]
 
     if DEBUG:
         app.logger.debug(f"Job submission data: {job}")
@@ -428,7 +443,9 @@ def background_submit_task(steps,jobTemplate,jobName,ntasks,partition,constraint
         try:
 
             # so token is refreshed
-            job_submitted = submit_job_with_f7t(system_name=SYSTEM_NAME, job_script=job_script)
+            job_submitted = submit_job_with_f7t(system_name=SYSTEM_NAME,
+                                                working_dir=targetPath,
+                                                job_script=job_script)
 
             if job_submitted["error"] == 1:
 
@@ -437,14 +454,12 @@ def background_submit_task(steps,jobTemplate,jobName,ntasks,partition,constraint
 
             job = job_submitted["job"]
 
-            socketio.emit("success", {"data":f"Job {jobName}_{step} submitted correctly (jobid: {job['jobid']})"})
+            socketio.emit("success", {"data":f"Job {jobName}_{step} submitted correctly (jobid: {job['jobId']})"})
 
             if DEBUG:
                 app.logger.debug(f"Job submission data: {job}")
 
-
-
-            lastJobId = job["jobid"]
+            lastJobId = job["jobId"]
             data = job
             status = 200
             if step == 1 and not isPostProcess:
@@ -459,7 +474,7 @@ def background_submit_task(steps,jobTemplate,jobName,ntasks,partition,constraint
 
             # JOB_LIST global variable updated: JOB_LIST = {"<jobid>": "<error_boolean>""}
 
-            JOB_LIST[job["jobid"]] = job_submitted["error"]
+            JOB_LIST[job["jobId"]] = job_submitted["error"]
 
         except f7t.FirecrestException as fe:
 
@@ -590,7 +605,13 @@ def submit_job():
                 if DEBUG:
                     app.logger.debug(f"Uploading {sourcePath} to {targetPath}")
 
-                upload_file = f7t_client.simple_upload(SYSTEM_NAME,source_path=sourcePath,target_path=targetPath)
+                directory = os.path.dirname(targetPath)
+
+                upload_file = f7t_client.upload(SYSTEM_NAME,
+                                                local_file=sourcePath,
+                                                directory=directory,
+                                                filename=os.path.basename(sourcePath)
+                                                )
 
             except f7t.FirecrestException as fe:
                 app.logger.error(f"Error Uploading {sourcePath} to {targetPath}: {fe}")
@@ -618,8 +639,14 @@ def submit_job():
                 if DEBUG:
                     app.logger.debug("File not found, uploading")
                     app.logger.debug(f"Uploading {sourcePath} to {targetPath}")
+
+
             
-                    upload_file = f7t_client.simple_upload(SYSTEM_NAME,source_path=sourcePath,target_path=targetPath)
+                    upload_file = f7t_client.upload(SYSTEM_NAME,
+                                                    local_file=sourcePath,
+                                                    directory=targetPath,
+                                                    filename=os.path.basename(sourcePath)
+                                                    )
             
             
         except f7t.FirecrestException as fe:
@@ -637,7 +664,6 @@ def submit_job():
                                     problem_ini_file, problem_msh_file, isPostProcess))
 
     bgtask.start()
-
     session.clear()
 
     session["jobDir"] = targetPath
@@ -678,8 +704,9 @@ def live():
     status = 200
     jobPath = f"{SYSTEM_BASE_DIR}/{g.user}/{PROBLEM_SUBDIR}/"
 
-    data = {"partitions": SYSTEM_PARTITIONS, "constraints": SYSTEM_CONSTRAINTS, 
-            "system": SYSTEM_NAME, "job_dir":jobPath, "system_status": system_status}
+    data = {"partitions": SYSTEM_PARTITIONS,
+            "system": SYSTEM_NAME, "job_dir": jobPath,
+            "system_status": system_status}
 
     if request.method == "POST":
         msg = None
