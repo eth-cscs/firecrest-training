@@ -10,41 +10,36 @@ from airflow.sensors.filesystem import FileSensor
 
 from firecrest_airflow_operators import (FirecRESTSubmitOperator,
                                          FirecRESTUploadOperator,
-                                         FirecRESTDownloadOperator)
+                                         FirecRESTDownloadFromJobOperator)
 
 
-workdir =   # absolute path to the directory `use-case-airflow-operator` in the repo
-username =  # the course account (classXXX)
+workdir = '/path/to/local/dir'  # directory on local workstation
+remotedir = '/path/to/remote/dir'  # directory on remote HPC system
+username = '<username>'  # username on the HPC system
+system = '<system>'  # HPC system name
 
 job_script = """#!/bin/bash -l
 
-#SBATCH --job-name=fc-airflow-example
+#SBATCH --job-name=airflow-example
+#SBATCH --output=slurm-%j.out
 #SBATCH --time=00:05:00
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-core=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=12
-#SBATCH --constraint=gpu
-#SBATCH --account=class08
-#SBATCH --reservation=firecrest_api
-
-module load daint-gpu
-module load QuantumESPRESSO
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
-mv $SCRATCH/si.scf.in $SCRATCH/Si.pz-vbc.UPF .
+uenv repo create
+uenv image pull quantumespresso/v7.3.1:v2
 
-srun pw.x -in si.scf.in
+srun --uenv quantumespresso/v7.3.1:v2 --view default pw.x -in si.scf.in
 """
 
 with DAG(
     dag_id="firecrest_example",
     schedule="@daily",
-    start_date=pendulum.datetime(2023, 9, 1, tz="UTC"),
+    start_date=pendulum.datetime(2025, 1, 1, tz="UTC"),
     catchup=False,
     dagrun_timeout=datetime.timedelta(minutes=60),
-    tags=["firecrest-training-2023"],
+    tags=["firecrest-v2-demo"],
 ) as dag:
 
     wait_for_file = FileSensor(
@@ -55,27 +50,38 @@ with DAG(
 
     upload_in = FirecRESTUploadOperator(
         task_id="upload-in",
-        system="daint",
+        system=system,
         source_path=os.path.join(workdir, "structs", "si.scf.in"),
-        target_path=f"/scratch/snx3000/{username}"
+        target_path=remotedir
     )
 
     upload_pp = FirecRESTUploadOperator(
         task_id="upload-pp",
-        system="daint",
+        system=system,
         source_path=os.path.join(workdir, "Si.pz-vbc.UPF"),
-        target_path=f"/scratch/snx3000/{username}"
+        target_path=remotedir
     )
 
     submit_task = FirecRESTSubmitOperator(
         task_id="job-submit",
-        system="daint", script=job_script
+        system=system, 
+        script=job_script,
+        working_dir=remotedir
     )
 
-    download_task = FirecRESTDownloadOperator(
+    download_out_task = FirecRESTDownloadFromJobOperator(
         task_id="download-out",
-        system="daint",
+        system=system,
+        remote_files = ["slurm-{_jobid_}.out"],
         local_path=os.path.join(workdir, "output.out"),
+        target_task_id="job-submit"
+    )
+
+    download_xml_task = FirecRESTDownloadFromJobOperator(
+        task_id="download-xml",
+        system=system,
+        remote_files = ['output/silicon.xml'],
+        local_path=os.path.join(workdir, "silicon.xml"),
         target_task_id="job-submit"
     )
 
@@ -92,7 +98,8 @@ with DAG(
 
     wait_for_file >> upload_in
     wait_for_file >> upload_pp
-    upload_in >> submit_task >> download_task >> log_results
+    upload_in >> submit_task >> download_out_task >> log_results
+    submit_task >> download_xml_task
     upload_pp >> submit_task
     upload_in >> remove_struct
 
