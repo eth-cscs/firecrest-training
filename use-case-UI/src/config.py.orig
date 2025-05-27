@@ -1,3 +1,10 @@
+#
+#  Copyright (c) 2025, ETH Zurich. All rights reserved.
+#
+#  Please, refer to the LICENSE file in the root directory.
+#  SPDX-License-Identifier: BSD-3-Clause
+#
+
 class Config:
     '''Base configuration class for the Flask app'''
 
@@ -5,23 +12,22 @@ class Config:
 class DevConfig(Config):
     '''Class for development configuration'''
     DEBUG = True
-    OIDC_CLIENT_ID = "<OIDC_CLIENT_ID>"
-    OIDC_CLIENT_SECRET = "<OIDC_CLIENT_SECRET>"
-    OIDC_AUTH_REALM = "firecrest-clients"
-    OIDC_AUTH_BASE_URL = "https://auth.cscs.ch"
+    OIDC_CLIENT_ID = "<CLIENT_ID>"
+    OIDC_CLIENT_SECRET = "<CLIENT_SECRET>"
+    OIDC_AUTH_REALM = "<OIDC_REALM>"
+    OIDC_AUTH_BASE_URL = "<OIDC_AUTH>"
     SECRET_KEY = 'A_SECRET_STRING'
     SESSION_TYPE = "filesystem"
-    FIRECREST_URL='https://firecrest.cscs.ch'
-    SYSTEM_NAME='daint'
+    FIRECREST_URL="<FIRECREST_URL>"
+    SYSTEM_NAME="<SYSTEM>"
     SYSTEM_PARTITIONS=['normal']
-    SYSTEM_RESERVATION='firecrest_api'
-    USER_GROUP='class08'
-    SYSTEM_CONSTRAINTS=['gpu']
-    PROBLEM_SUBDIR = "f7t_training"
+    SYSTEM_RESERVATION="<SCHEDULER_RESERVATION>"
+    USER_GROUP='<USER_GROUP>'
+    PROBLEM_SUBDIR = "f7t_demo"
     PROBLEM_INI_FILE = ''
     PROBLEM_MSH_FILE = ''
     SBATCH_TEMPLATE = "demo.sh.tmpl"
     POST_TEMPLATE = "demo_post.sh.tmpl"
-    CLIENT_PORT = 9090
+    CLIENT_PORT = 9091
     # SSL configuration
     USE_SSL = False

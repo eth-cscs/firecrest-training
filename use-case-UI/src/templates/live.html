@@ -1,14 +1,20 @@
+<!--
+--  Copyright (c) 2025, ETH Zurich. All rights reserved.
+--
+--  Please, refer to the LICENSE file in the root directory.
+--  SPDX-License-Identifier: BSD-3-Clause
+-->
 {% extends "base.html" %}
 
 {% block head %}
     {{ super () }}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://unpkg.com/bootstrap-table@1.24.1/dist/bootstrap-table.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
     {% block title %}
-        <title>FirecREST Live</title>
+        <title>FirecREST UI Demo</title>
     {% endblock title %}
 {% endblock head%}
 
@@ -262,6 +268,7 @@
 
     function rowStyle(row,index){
 
+        
         if (row.state == "RUNNING"){
             return{ classes: "table-primary" }
         }
@@ -309,7 +316,7 @@
     <tr>
         <td><img width="150px" src="static/logo.png"> </td>
 
-        <td><h1>FirecREST Live </h1></td>
+        <td><h1>FirecREST UI Demo </h1></td>
     </tr>
 </table>
 
@@ -386,18 +393,18 @@
             data-auto-refresh-status="true"
             data-auto-refresh-silent="false"
             data-row-style="rowStyle"
-            data-sort-name="state"
+            data-sort-name="jobId"
             >
             <thead>
                 <tr>
-                <th data-sortable="false" data-field="jobid">Job ID</th>
+                <th data-sortable="false" data-field="jobId">Job ID</th>
                 <th data-sortable="false" data-field="name">Job Name</th>
-                <th data-field="nodelist">Node List</th>
+                <!-- <th data-field="nodelist">Node List</th> -->
                 <th data-field="nodes">Nodes</th>
                 <th data-field="partition">Partition</th>
-                <th data-sortable="false" data-field="start_time">Start Time</th>
+                <th data-sortable="false" data-field="start">Start Time</th>
                 <th data-sorter="stateSorter" data-sortable="true" data-field="state">State</th>
-                <th data-sortable="false" data-field="time">Time</th>
+                <th data-sortable="false" data-field="elapsed">Time</th>
                 </tr>
             </thead>
             </table>
@@ -520,7 +527,7 @@
 
             data-show-multi-sort="true"
             data-show-multi-sort-button="false"
-            data-sort-priority='[{"sortName": "last_modified", "sortOrder": "desc"}]'
+            data-sort-priority='[{"sortName": "lastModified", "sortOrder": "desc"}]'
             data-auto-refresh="true"
             data-auto-refresh-interval="15"
             data-auto-refresh-status="true"
@@ -531,7 +538,7 @@
             <thead>
                 <tr>
                 <th data-sortable="true" data-field="name">Name</th>
-                <th data-sortable="true" data-field="last_modified">Modified</th>
+                <th data-sortable="true" data-field="lastModified">Modified</th>
                 <th class="text-right" data-field="size">Size [b]</th>
                 </tr>
             </thead>

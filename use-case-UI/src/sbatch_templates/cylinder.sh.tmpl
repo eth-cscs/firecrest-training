@@ -1,12 +1,23 @@
-#!/bin/bash -l
+##
+##  Copyright (c) 2025, ETH Zurich. All rights reserved.
+##
+##  Please, refer to the LICENSE file in the root directory.
+##  SPDX-License-Identifier: BSD-3-Clause
+##
+#!/bin/bash
+
 #SBATCH --job-name={{ jobName }}
 #SBATCH --time=00:10:00
 #SBATCH --nodes={{ ntasks }}
-#SBATCH --partition={{ partition }}
-#SBATCH --constraint={{ constraint }}
 #SBATCH --account={{ account }}
 #SBATCH --error=slurm-{{ jobName }}-%j.err
 #SBATCH --output=slurm-{{ jobName }}-%j.out
+{% if partition is not none %}
+#SBATCH --partition={{ partition }}
+{% endif %}
+{% if constraint is not none %}
+#SBATCH --constraint={{ constraint }}
+{% endif %}
 {% if reservation is not none %}
 #SBATCH --reservation={{ reservation }}
 {% endif %}
