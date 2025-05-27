@@ -1,11 +1,10 @@
-#!/bin/bash
 ##
-##  Copyright (c) 2019-2024, ETH Zurich. All rights reserved.
+##  Copyright (c) 2025, ETH Zurich. All rights reserved.
 ##
 ##  Please, refer to the LICENSE file in the root directory.
 ##  SPDX-License-Identifier: BSD-3-Clause
 ##
-#!/bin/bash
+#!/bin/bash -l
 #SBATCH --job-name=f7t_test
 #SBATCH --ntasks=1
 #SBATCH --tasks-per-node=1
