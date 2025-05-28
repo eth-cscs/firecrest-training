@@ -14,7 +14,7 @@ auth = f7t.ClientCredentialsAuth(
 )
 
 # Setup the client object
-client = f7t.Firecrest(
+client = f7t.v2.Firecrest(
     firecrest_url=FIRECREST_URL,
     authorization=auth
 )
@@ -26,8 +26,7 @@ print(systems)
 
 # 1. Get tha different parameters of our deployment
 # 2. Get the username of the user
-# 3. List all microservices and their status
-# 4. List the contents of a directory
-# 5. Upload and download "small" files
-# 6. Submit a job
-# 7. [Optional] Submit a job and poll until the it is finished
+# 3. List the contents of a directory
+# 4. Upload and download "small" files
+# 5. Submit a job
+# 6. [Optional] Submit a job and poll until the it is finished
