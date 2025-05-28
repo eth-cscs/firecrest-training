@@ -15,12 +15,15 @@ python -m pip install -r requirements.txt
 Setup environment with credentials and the necessary URLs:
 
 ```bash
-export FIRECREST_CLIENT_ID=<client-id>
-export FIRECREST_CLIENT_SECRET=<client-secret>
+#!/bin/bash
+
+export FIRECREST_CLIENT_ID=
+export FIRECREST_CLIENT_SECRET=
+export FIRECREST_URL=https://api.cscs.ch/hpc/firecrest/v2
 export AUTH_TOKEN_URL=https://auth.cscs.ch/auth/realms/firecrest-clients/protocol/openid-connect/token
-export FIRECREST_URL=https://firecrest.cscs.ch
 
 # Optional for the CLI
+export FIRECREST_API_VERSION="2.0.0"
 export FIRECREST_SYSTEM=daint
 ```
 

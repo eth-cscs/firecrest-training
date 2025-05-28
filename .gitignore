@@ -4,3 +4,4 @@ __pycache__/
 *.log
 use-case-UI/src/client_solved.py
 use-case-UI/src/config.py
+*venv_demo

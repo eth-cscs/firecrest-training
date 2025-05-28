@@ -14,7 +14,7 @@ auth = f7t.ClientCredentialsAuth(
 )
 
 # Setup the client object
-client = f7t.Firecrest(
+client = f7t.v2.Firecrest(
     firecrest_url=FIRECREST_URL,
     authorization=auth
 )
