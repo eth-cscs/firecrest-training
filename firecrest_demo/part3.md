@@ -114,6 +114,7 @@ Let's move to an example in [examples/asyncio_workflow.py](examples/asyncio_work
 ### Benefits
 
 1. The pyfirecrest client is IO-bound, it is mostly waiting for the results of the requests, which makes it an ideal candidate for asynchronous programming.
+1. The uploading of large files is significantly faster, since the different parts of the files are uploaded in parallel.
 1. In future releases, we would like to allow the user to set their own rate limit of requests and optimise the number of requests the clients sends (for example merging polling requests for jobs from different asyncio tasks).
 These features are already available for the v1 client.
 
