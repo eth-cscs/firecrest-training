@@ -59,17 +59,16 @@ client = f7t.v2.Firecrest(
 # After this setup, you can go on and try some of the methods of the object
 
 
-systems = client.all_systems()
+systems = client.systems()
 print(systems)
 
 ## Exercise:
 
-# 1. Get tha different parameters of our deployment
-# 2. Get the username of the user
-# 3. List the contents of a directory
-# 4. Upload and download files
-# 5. Submit a job
-# 6. [Optional] Submit a job and poll until the it is finished
+# 1. Get the username of the user
+# 2. List the contents of a directory
+# 3. Upload and download "small" files
+# 4. Submit a job and get the job information
+# 5. [Optional] Submit a job and poll until the it is finished
 ```
 
 

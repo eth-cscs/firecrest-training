@@ -1,5 +1,6 @@
 import firecrest as f7t
 import os
+import json
 
 
 # Get the values from the env or set them directly in your file
@@ -19,14 +20,13 @@ client = f7t.v2.Firecrest(
     authorization=auth
 )
 
-systems = client.all_systems()
-print(systems)
+systems = client.systems()
+print(json.dumps(systems, indent=4))
 
-## Exercise:
+# Exercise:
 
-# 1. Get tha different parameters of our deployment
-# 2. Get the username of the user
-# 3. List the contents of a directory
-# 4. Upload and download "small" files
-# 5. Submit a job
-# 6. [Optional] Submit a job and poll until the it is finished
+# 1. Get the username of the user
+# 2. List the contents of a directory
+# 3. Upload and download "small" files
+# 4. Submit a job and get the job information
+# 5. [Optional] Submit a job and poll until the it is finished
