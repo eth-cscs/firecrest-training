@@ -39,7 +39,7 @@ client.download(
 # # For small files the download will return `None` and the file will be available in the target directory
 # # For large files the download will return an object with information about the job
 # if download_obj:
-#     print(download_obj.transfer_info)
+#     print(download_obj.transfer_data)
 #     # You can also set an optional timeout for the job
 #     download_obj.wait_for_transfer_job(timeout=None)
 #     # You can download the file multiple times in different localion by setting

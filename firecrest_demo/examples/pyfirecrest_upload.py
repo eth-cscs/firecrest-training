@@ -42,7 +42,7 @@ client.upload(
 # # available in the target directory.
 # # For large files the upload will return an object with information about the job.
 # if upload_obj:
-#     print(upload_obj.transfer_info)
+#     print(upload_obj.transfer_data)
 #     upload_obj.upload_file_to_stage()
 #     # You can also set an optional timeout for the job
 #     upload_obj.wait_for_transfer_job(timeout=None)
