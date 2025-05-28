@@ -27,7 +27,7 @@ keycloak = f7t.ClientCredentialsAuth(
 )
 ```
 
-The `ClientCredentialsAuth` object will try to make the minimum requests that are necessary by reusing the access token while it is valid. More info on parameterizing it in the [docs]().
+The `ClientCredentialsAuth` object will try to make the minimum requests that are necessary by reusing the access token while it is valid. More info on parameterizing it in the [docs](https://pyfirecrest.readthedocs.io/en/stable/authorization.html).
 
 
 ### Example of calls with pyfirecrest
@@ -66,9 +66,10 @@ print(systems)
 
 # 1. Get tha different parameters of our deployment
 # 2. Get the username of the user
-# 3. List all microservices and their status
-# 4. List the contents of a directory
-# 5. Upload and download "small" files
+# 3. List the contents of a directory
+# 4. Upload and download files
+# 5. Submit a job
+# 6. [Optional] Submit a job and poll until the it is finished
 ```
 
 
@@ -77,72 +78,107 @@ print(systems)
 For larger files the user cannot directly upload/download a file to/from FirecREST.
 A staging area will be used and the process will require multiple requests from the user.
 
-More about the [external download](external_download.pdf) and [external upload](external_upload.pdf) workflows in the links.
+## External download
 
-## External upload with pyfirecrest
+### Steps of downloading a file:
 
-the requested file will first have to be moved to the staging area. This could take a long time in case of a large file. When this process finishes, FirecREST will have created a dedicated space for this file and the user can download the file locally as many times as he wants. You can follow this process with the status codes of the task:
+The requested file will first have to be moved to the staging area.
+This could take a long time in case of a large file.
+When this process finishes, FirecREST will have created a dedicated space for this file and the user can download the file locally as many times as he wants.
 
-| Status | Description |
-| ------ | ----------- |
-| 116    | Started upload from filesystem to Object Storage |
-| 117    | Upload from filesystem to Object Storage has finished successfully |
-| 118    | Upload from filesystem to Object Storage has finished with errors |
+For CSCS, if the user was doing the process manually they would need to do the following steps:
 
-In code it would look like this:
+1. The user initiates the transfer by making a request to FirecREST with the remote file path and he will receive a Slurm job ID and a link from S3 to download the file.
+2. The user would need to poll the status of the job until it has completed and make sure he checks in the log files that the first transfer finished successfully.
+3. If step (2) finishes successfully then the user can use the S3 link to download the file and store it in his local system.
+
+## Using pyfirecrest for downloading files
+
+The client of pyfirecrest can handle the whole process or give more control to the user.
 
 ```python
-# This call will only start the transfer of the file to the staging area
-down_obj = client.external_download("daint", "</remote/full/path/to/the/file>")
-
-print(type(down_obj))
-
-# You can follow the progress of the transfer through the status property
-print(down_obj.status)
-
-# As soon as down_obj.status is 117 we can proceed with the download to a local file
-down_obj.finish_download("my_local_file")
-
-# You can get directly the link in the staging area and finish the download in your prefered way.
-print(down_obj.object_storage_link)
-
-# You can download the file as many times as we want from the staging area.
-# After you finish, you should invalidate the link.
-down_obj.invalidate_object_storage_link()
+client.download(
+    system_name="daint",
+    source_path="/capstor/scratch/cscs/<username>/7mb_file.obj",
+    target_path="./local_file.txt",
+    account="crs02",
+    blocking=True
+)
 ```
 
-You can check all the details of the `ExternalDownload` object that will be created in the [docs](https://pyfirecrest.readthedocs.io/en/stable/reference_basic.html#the-externaldownload-class)
+If you want to do it in steps, you can do each step from the functions of ExternalDownload object or use your own custom functions. Here is the workflow broken down in steps:
+
+```python
+download_obj = client.download(
+    system_name="daint",
+    source_path="/capstor/scratch/cscs/<username>/7mb_file.obj",
+    target_path="./local_file.txt",
+    account="crs02",
+    blocking=False
+)
+# For small files the download will return `None` and the file will be available in the target directory
+# For large files the download will return an object with information about the job
+if download_obj:
+    print(download_obj.transfer_info)
+    # You can also set an optional timeout for the job
+    download_obj.wait_for_transfer_job(timeout=None)
+    # You can download the file multiple times in different localion by setting
+    # the optional argument file_path. By default the original `target_path`
+    # will be used
+    download_obj.download_file_from_stage(file_path=None)
+```
+
+You can check all the details of the external download in the [docs](https://eth-cscs.github.io/firecrest-v2/user_guide/#downloading-large-files) with examples in different programming languages.
 
 **[Optional]** You can also try to do this in the CLI of pyfirecrest.
 
-## External download with pyfirecrest
+## External upload with pyfirecrest
 
-The case of external upload is very similar.
-To upload a file you would have to ask for the link in the staging area and upload the file there.
-**Even after uploading the file there, it will take some time for the file to appear in the filesystem.**
-You can follow the status of the task with the status method and when the file has been successfully uploaded the status of the task will be 114.
+Similarly, the upload would require the user to upload the file to a staging area and FirecREST would launch a job that would take care of the transfer from the staging area to the remote filesystem.
+For the uploading
 
-| Status | Description |
-| ------ | ----------- |
-| 110    | Waiting for Form URL from Object Storage to be retrieved |
-| 111    | Form URL from Object Storage received |
-| 112    | Object Storage confirms that upload to Object Storage has finished |
-| 113    | Download from Object Storage to server has started |
-| 114    | Download from Object Storage to server has finished |
-| 115    | Download from Object Storage error |
+### Steps of uploading a file:
+
+If the user was doing the process manually they would need to do the following steps:
+
+1. The user will make a request to FirecREST to start the upload and will get back a job ID and a link for the upload to the staging area.
+2. The user will upload the file in chunks to the staging area.
+This includes uploading each part individually and using the provided ETags to complete the upload.
+3. Then the user will use the job ID that was provided to track the progress of the transfer between staging area and remote filesystem.
+This includes checking that the status of the job was successful and there was no error in the process.
+
+In code it would look like with `blocking=True`:
 
 ```python
-# This call will only create the link to Object Storage
-up_obj = client.external_upload("daint", "/path/to/local/file", "/remote/path/to/filesystem")
-
-# As soon as up_obj.status is 111 we can proceed with the upload of local file to the staging area
-up_obj.finish_upload()
-
-# You can follow the progress of the transfer through the status property
-print(up_obj.status)
+client.upload(
+    system_name="daint",
+    local_file="/home/local_user/local_file_7mb.out",
+    directory="/capstor/scratch/cscs/<username>",
+    filename="uploaded_file.out",
+    account="crs02",
+    blocking=True
+)
 ```
 
-You can get the necessary components for the upload from the `object_storage_data` property.
-You can get the link, as well as all the necessary arguments for the request to Object Storage and the full command you could perform manually from the terminal.
+Or broken down in steps:
+
+```python
+upload_obj = client.upload(
+    system_name="daint",
+    local_file="/home/local_user/local_file_7mb.out",
+    directory="/capstor/scratch/cscs/<username>",
+    filename="uploaded_file.out",
+    account="crs02",
+    blocking=False
+)
+# For small files the upload will return `None` and the file will be directly
+# available in the target directory.
+# For large files the upload will return an object with information about the job.
+if upload_obj:
+    print(upload_obj.transfer_info)
+    upload_obj.upload_file_to_stage()
+    # You can also set an optional timeout for the job
+    upload_obj.wait_for_transfer_job(timeout=None)
+```
 
 **[Optional]** You can also try to do this in the CLI of pyfirecrest.

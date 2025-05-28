@@ -2,28 +2,22 @@
 
 ## Enable logging in your python code
 
-The simplest way to enable logging in your code would be to add this in the beginning of your file:
+The simplest way to enable logging in your code would be to add this in the beginning of your file.
+The v2 clients in pyFirecREST have all of their messages in `DEBUG` level.
+If you want to avoid messages from other packages, you can do the following
 
 ```python
 import logging
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s:%(name)s:%(message)s",
-)
+logger = logging.getLogger("firecrest")
+logger.setLevel(logging.DEBUG)
+ch = logging.FileHandler("firecrest_log.log")
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(asctime)s - %(message)s", datefmt="%H:%M:%S")
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 ```
 
-pyFirecREST has all of it’s messages in `INFO` level. If you want to avoid messages from other packages, you can do the following:
-
-```python
-import logging
-
-logging.basicConfig(
-    level=logging.WARNING,
-    format="%(levelname)s:%(name)s:%(message)s",
-)
-logging.getLogger("firecrest").setLevel(logging.INFO)
-```
 
 ## How to catch and debug errors
 
@@ -40,9 +34,9 @@ import firecrest as f7t
 
 
 try:
-    parameters = client.parameters()
-    print(f"Firecrest parameters: {parameters}")
-except f7t.FirecrestException as e:
+    files = client.list_files("cluster", "/home/test_user")
+    print(f"List of files: {files}")
+except fc.FirecrestException as e:
     # You can just print the exception to get more information about the type of error,
     # for example an invalid or expired token.
     print(e)
@@ -87,7 +81,7 @@ auth = f7t.ClientCredentialsAuth(
 )
 
 # Setup the client object
-client = f7t.AsyncFirecrest(
+client = f7t.v2.AsyncFirecrest(
     firecrest_url=FIRECREST_URL,
     authorization=auth
 )
@@ -97,7 +91,7 @@ As you can see in the reference, the methods of AsyncFirecrest have the same nam
 
 ```python
 # Getting all the systems
-systems = await client.all_systems()
+systems = await client.systems()
 print(systems)
 
 # Getting the files of a directory
@@ -105,7 +99,11 @@ files = await client.list_files("daint", "/scatch/scratch3000/test_user")
 print(files)
 
 # Submit a job
-job = await client.submit("daint", "script.sh")
+job = await client.submit(
+    "daint",
+    script_local_path="script.sh",
+    working_directory="/scatch/scratch3000/test_user"
+)
 print(job)
 ```
 
@@ -115,10 +113,10 @@ Let's move to an example in [examples/asyncio_workflow.py](examples/asyncio_work
 
 ### Benefits
 
-1. The pyfirecrest client is IO-bound, it is mostly waiting for the results of the requests, which makes it an ideal candiate for asynchronous programming.
-1. You can set up the rate limit for requests per microservice and pyfirecrest will handle it on the background.
-1. When pyfirecrest is getting many requests for a similar kind of request (for example polling for jobs or tasks), it will try to merge these requests.
-  This happens for `pyfirecrest>=2.0.0`.
+1. The pyfirecrest client is IO-bound, it is mostly waiting for the results of the requests, which makes it an ideal candidate for asynchronous programming.
+1. In future releases, we would like to allow the user to set their own rate limit of requests and optimise the number of requests the clients sends (for example merging polling requests for jobs from different asyncio tasks).
+These features are already available for the v1 client.
+
 
 ### Drawbacks
 

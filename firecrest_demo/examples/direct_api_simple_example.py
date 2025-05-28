@@ -27,7 +27,6 @@ print(f"\nJSON:\n{json.dumps(json_result, indent=4)}\n")
 TOKEN = response.json()["access_token"]
 
 # Uncomment the code below to decode the token
-
 # decoded = jwt.decode(
 #     response.json()["access_token"],
 #     options={"verify_signature": False},
