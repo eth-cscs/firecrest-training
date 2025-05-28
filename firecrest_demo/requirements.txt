@@ -1,2 +1,2 @@
-pyfirecrest==2.0.0
+pyfirecrest==3.0.1
 requests

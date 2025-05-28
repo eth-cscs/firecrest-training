@@ -4,7 +4,6 @@
 #SBATCH --time=5:00
 #SBATCH --nodes=2
 #SBATCH -Cgpu
-
 #SBATCH --reservation=firecrest
 #SBATCH -Acrs02
 

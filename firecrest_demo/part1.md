@@ -76,10 +76,10 @@ print(f"JSON:\n{json.dumps(response.json(), indent=4)}")
 
 If you have `curl` installed the request will look like this:
 ```bash
-curl -s -X POST "$(AUTH_TOKEN_URL)" \
+curl -s -X POST "${AUTH_TOKEN_URL}" \
      --data "grant_type=client_credentials" \
-     --data "client_id=$(FIRECREST_CLIENT_ID)" \
-     --data "client_secret=$(FIRECREST_CLIENT_SECRET)"
+     --data "client_id=${FIRECREST_CLIENT_ID}" \
+     --data "client_secret=${FIRECREST_CLIENT_SECRET}"
 ```
 
 Example response:
@@ -110,7 +110,7 @@ print("Decoded token:", json.dumps(decoded, indent=4))
 
 After we obtain the token we can use this to make our first request to FirecREST:
 
-To test the credentials we can use a simple call to the `Status` microservice. We can call the [status/systems](https://firecrest-api.cscs.ch/#/Status/get_status_systems) endpoint with a `GET` operation to get more information about the systems that are available through this deployment fo FirecREST. The access token has to be included in the header.
+To test the credentials we can make a request to [/status/systems](https://eth-cscs.github.io/firecrest-v2/openapi/#/status/get_systems_status_systems_get) endpoint with a `GET` operation to get more information about the systems that are available through this deployment fo FirecREST. The access token has to be included in the header.
 
 ```python
 
@@ -127,17 +127,111 @@ print(json.dumps(response.json(), indent=4))
 We should get some response like this:
 ```json
 {
-    "description": "List of systems with status and description.",
-    "out": [
+    "systems": [
         {
-            "description": "Filesystem /scratch/e1000 is not available",
-            "status": "not available",
-            "system": "eiger"
-        },
+            "name": "eiger",
+            ...
         {
-            "description": "System ready",
-            "status": "available",
-            "system": "daint"
+            "name": "daint",
+            "ssh": {
+                "host": "daint.alps.cscs.ch",
+                "port": 22,
+                "proxyHost": null,
+                "proxyPort": null,
+                "maxClients": 100,
+                "timeout": {
+                    "connection": 5,
+                    "login": 5,
+                    "commandExecution": 5,
+                    "idleTimeout": 60,
+                    "keepAlive": 5
+                }
+            },
+            "scheduler": {
+                "type": "slurm",
+                "version": "24.05.4",
+                "apiUrl": null,
+                "apiVersion": null,
+                "timeout": 10
+            },
+            "servicesHealth": [
+                {
+                    "serviceType": "scheduler",
+                    "lastChecked": "2025-05-27T10:38:56.581838Z",
+                    "latency": 1.6268017292022705,
+                    "healthy": true,
+                    "message": null,
+                    "nodes": {
+                        "available": 14,
+                        "total": 1020
+                    }
+                },
+                {
+                    "serviceType": "ssh",
+                    "lastChecked": "2025-05-27T10:38:56.669635Z",
+                    "latency": 1.7143478393554688,
+                    "healthy": true,
+                    "message": null
+                },
+                {
+                    "serviceType": "filesystem",
+                    "lastChecked": "2025-05-27T10:38:56.128036Z",
+                    "latency": 1.1726181507110596,
+                    "healthy": true,
+                    "message": null,
+                    "path": "/capstor/scratch/cscs"
+                },
+                {
+                    "serviceType": "filesystem",
+                    "lastChecked": "2025-05-27T10:38:55.343629Z",
+                    "latency": 0.38807177543640137,
+                    "healthy": true,
+                    "message": null,
+                    "path": "/users"
+                },
+                {
+                    "serviceType": "filesystem",
+                    "lastChecked": "2025-05-27T10:38:56.214138Z",
+                    "latency": 1.2584686279296875,
+                    "healthy": true,
+                    "message": null,
+                    "path": "/capstor/store/cscs"
+                },
+                {
+                    "serviceType": "s3",
+                    "lastChecked": "2025-05-27T10:38:55.078636Z",
+                    "latency": 0.11069488525390625,
+                    "healthy": true,
+                    "message": null
+                }
+            ],
+            "probing": {
+                "interval": 300,
+                "timeout": 10
+            },
+            "fileSystems": [
+                {
+                    "path": "/capstor/scratch/cscs",
+                    "dataType": "scratch",
+                    "defaultWorkDir": true
+                },
+                {
+                    "path": "/users",
+                    "dataType": "users",
+                    "defaultWorkDir": false
+                },
+                {
+                    "path": "/capstor/store/cscs",
+                    "dataType": "store",
+                    "defaultWorkDir": false
+                }
+            ],
+            "datatransferJobsDirectives": [
+                "#SBATCH --nodes=1",
+                "#SBATCH --time=0-00:15:00",
+                "#SBATCH --account={account}",
+                "#SBATCH --partition=xfer"
+            ]
         }
     ]
 }
@@ -152,39 +246,34 @@ FirecREST offers three basic functionalities of the scheduler:
 
 ## The `compute` workflow
 
-See the workflow [here](compute_sbatch.pdf).
+On FirecREST v2 may be interacting with Slurm through the [Slurm API](https://slurm.schedmd.com/rest.html) or by dispatching the relevant commands on the login node and parsing the results, eg. `sbatch`, `sacct`, `scancel` etc.
 
-On a job scheduler like Slurm, every job has a unique `job ID`, which is created when a job is submitted and can be used to track the state of the job. With calls like `squeue` and `sacct` the user can see the state of the job (RUNNING, COMPLETED, etc.) as well as get information for the job.
-Similarly, for every task FirecREST will assign a `task ID` with which the user can track the state of the request and get information about it.
-
-## Implement the job submission with direct calls to the api:
 
 ```python
-localPath = 'script.sh'
+local_path = 'script.sh'
+system_name = 'daint'
 
-response = requests.post(
-    url=f'{FIRECREST_URL}/compute/jobs/upload',
-    headers={'Authorization': f'Bearer {TOKEN}',
-             'X-Machine-Name': "daint"},
-    files={'file': open(localPath, 'rb')}
+with open(local_path, 'r') as f:
+    data = {
+        'job': {
+            'script': f.read(),
+            'working_directory': '/scratch/snx3000/eirinik',
+        }
+    }
+
+job = requests.post(
+    url=f'{FIRECREST_URL}/compute/{system_name}/jobs',
+    headers={'Authorization': f'Bearer {TOKEN}'},
+    data=json.dumps(data)
 )
 
-print(json.dumps(response.json(), indent=4))
+print(json.dumps(job.json(), indent=4))
+```
 
-taskid = response.json()['task_id']
+And the output will be simply the job ID:
 
-while True:
-    response = requests.get(
-        url=f'{FIRECREST_URL}/tasks/{taskid}',
-        headers={'Authorization': f'Bearer {TOKEN}'}
-    )
-
-    print(json.dumps(response.json(), indent=4))
-
-    if int(response.json()["task"]["status"]) < 200:
-        continue
-
-    break
-
-print(json.dumps(response.json()["task"]["data"], indent=4))
+```json
+{
+    "jobId": 1090103
+}
 ```

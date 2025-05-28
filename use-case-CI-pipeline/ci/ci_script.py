@@ -39,6 +39,7 @@ def select_dict_by_name(name, list_of_dicts, select_key="name"):
 def check_mandatory_env_var(env_var):
     r = os.environ.get(env_var)
     if not r:
+        print(f"Mandatory environment variable `{env_var}` is not set")
         exit(1)
 
     return r
@@ -65,12 +66,10 @@ def main():
     AUTH_TOKEN_URL = check_mandatory_env_var("AUTH_TOKEN_URL")
     SYSTEM_WORKING_DIR = check_mandatory_env_var("SYSTEM_WORKING_DIR")
 
-    keycloak = fc.ClientCredentialsAuth(CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_URL)
-    client = fc.v2.Firecrest(firecrest_url=FIRECREST_URL, authorization=keycloak)
+    keycloak = # Set up the OIDC authentication
+    client = # Set up the FirecREST client
 
-    all_systems = client.systems()
-    system_names = [system["name"] for system in all_systems]
-    print(f"Available systems: {', '.join(system_names)}")
+    all_systems = client. # Get the list of all available systems and print their names
 
     script_content = util.create_batch_script(
         repo=args.repo,
@@ -95,50 +94,27 @@ def main():
     )
 
     if scheduler_health_info["healthy"]:
-        job = client.submit(
-            system_name,
-            working_dir=SYSTEM_WORKING_DIR,
-            script_str=script_content,
-        )
+        # Submit a job to the system with the provided script in `script_content` and
+        # SYSTEM_WORKING_DIR is the directory where the job will run
+        job = client. # TODO
         print(f"Submitted job: {job['jobId']}")
         while True:
-            try:
-                poll_result = client.job_info(system_name, jobid=job["jobId"])
-            except FirecrestException as e:
-                if e.responses[-1].status_code == 404:
-                    print(f"No available information yet for job {job['jobId']}")
-                    time.sleep(2)
-                    continue
-
-                raise e
-
-            print(f"Job status: {poll_result}")
-            state = poll_result[0]["status"]["state"]
-            if state in final_slurm_states:
-                print(f"Job is in final state: {state}")
-                break
-
-            print(
-                f"Status of the job is {state}, "
-                f"will try again in 10 seconds"
-            )
-            time.sleep(10)
+            # Check the status of the job every 10 seconds and break
+            # when the job is in a final state
 
         stdout_file_path = os.path.join(SYSTEM_WORKING_DIR, 'job.out')
         stderr_file_path = os.path.join(SYSTEM_WORKING_DIR, 'job.err')
 
         print(f"\nSTDOUT in {stdout_file_path}")
-        stdout_content = client.tail(system_name, path=stdout_file_path, num_lines=1000)["content"]
+        stdout_content = # Check the last 1000 lines of the job's stdout file
         print(stdout_content)
 
         print(f"\nSTDERR in {stderr_file_path}")
-        stderr_content = client.tail(system_name, path=stderr_file_path, num_lines=1000)["content"]
+        stderr_content = # Check the last 1000 lines of the job's stderr file
         print(stderr_content)
 
         # Some sanity checks:
-        if poll_result[0]["status"]["state"] != "COMPLETED":
-            print(f"Job was not successful, status: {poll_result[0]['status']['state']}")
-            exit(1)
+        # Check if the job is finished correctly (the state should be `COMPLETED`)
 
         util.check_output(stdout_content)
 

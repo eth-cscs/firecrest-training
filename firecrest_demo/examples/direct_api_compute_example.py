@@ -1,7 +1,6 @@
 import requests
 import os
 import json
-import time
 
 
 CLIENT_ID = os.environ.get("FIRECREST_CLIENT_ID")
@@ -22,33 +21,23 @@ response = requests.post(
 TOKEN = response.json()["access_token"]
 
 # Submit a job
-localPath = 'script.sh'
+local_path = 'script.sh'
+system_name = 'daint'
 
-response = requests.post(
-    url=f'{FIRECREST_URL}/compute/jobs/upload',
-    headers={'Authorization': f'Bearer {TOKEN}',
-             'X-Machine-Name': "daint"},
-    files={'file': open(localPath, 'rb')}
+with open(local_path, 'r') as f:
+    data = {
+        'job': {
+            'script': f.read(),
+            'working_directory': '/scratch/snx3000/eirinik',
+        }
+    }
+
+job = requests.post(
+    url=f'{FIRECREST_URL}/compute/{system_name}/jobs',
+    headers={'Authorization': f'Bearer {TOKEN}'},
+    data=json.dumps(data)
 )
 
-print(json.dumps(response.json(), indent=4))
+print(json.dumps(job.json(), indent=4))
 
-taskid = response.json()['task_id']
-
-while True:
-    response = requests.get(
-        url=f'{FIRECREST_URL}/tasks/{taskid}',
-        headers={'Authorization': f'Bearer {TOKEN}'}
-    )
-
-    print(json.dumps(response.json(), indent=4))
-
-    if int(response.json()["task"]["status"]) < 200:
-        time.sleep(5)
-        continue
-
-    break
-
-print(json.dumps(response.json()["task"]["data"], indent=4))
-
-# As an excercise try to poll for a job
+# As an excercise try to poll for a job and cancel it
