@@ -2,23 +2,24 @@
 
 ## Introduction
 
-Create a Web UI application on Python (Flask) to interface HCP services at CSCS
+The objective of this exercise is to create a Web UI application on Python (Flask) to interface HCP services at CSCS using FirecREST API.
 
-In this directory, the file [src/client.py](./src/client.py) provides a number of functions to be completed with [pyFirecREST](https://pyfirecrest.readthedocs.io/en/stable/tutorial_basic_v2.html) or [FirecREST API](https://eth-cscs.github.io/firecrest-v2/). This functions are the ones that has the `_with_f7t` suffix.
+To accomplish the task, you must edit the file [src/client.py](./src/client.py) and **replace the content of the functions with the suffix `_with_f7t`** using [pyFirecREST](https://pyfirecrest.readthedocs.io/en/stable/tutorial_basic_v2.html) (suggested) or [FirecREST API](https://eth-cscs.github.io/firecrest-v2/).
+
+Each function provides the type of response and parameters requested to fulfill the activity.
 
 Follow the Configuration guide to adapt your client credentials to the app.
 
 ## Prerequisites
 
-- CSCS training credentials (provided by the trainers)
-- Create your FirecREST API client using the [CSCS Developer Portal](https://developer.cscs.ch)  
-- [Docker](https://docs.docker.com/get-started/docker-overview/) installed
-- Knowledge of Python
+- API keys training credentials.
+- [Docker](https://docs.docker.com/get-started/docker-overview/) or [Podman](https://podman.io/get-started) installed in your workstation.
+- Knowledge of Python.
 
 ## Configuration
 
 1. Copy the configuration file (`src/config.py.orig`) and rename it as `src/config.py`
-    
+
     Open a terminal in your laptop and clone the repository, move to the `use-case-UI/src` directory:
 
     ```bash
@@ -32,14 +33,14 @@ Follow the Configuration guide to adapt your client credentials to the app.
     ```python
     ...
     class DevConfig(Config):
-        OIDC_CLIENT_ID = "<CLIENT_ID>" # obtained from Developer Portal
-        OIDC_CLIENT_SECRET = "<CLIENT_SECRET>" # obtained from Developer Portal
-        USER_GROUP="crs02"
+        OIDC_CLIENT_ID = "<CLIENT_ID>" # obtained from instructors
+        OIDC_CLIENT_SECRET = "<CLIENT_SECRET>" # obtained from instructors
+        USER_GROUP="<GROUP>" # obtained from instructors
         OIDC_AUTH_BASE_URL = "https://auth.cscs.ch"
         OIDC_AUTH_REALM = "firecrest-clients"
         FIRECREST_URL="https://api.cscs.ch/hpc/firecrest/v2"
         SYSTEM_NAME="daint"
-        SYSTEM_RESERVATION="firecrest"
+        SYSTEM_RESERVATION="<RESERVATION>" # obtained from instructors
         (...)
     ```
 
@@ -65,9 +66,14 @@ Follow the Configuration guide to adapt your client credentials to the app.
 Build app and run
 
 ```bash
-make build
-make run
+$ # return to the use-Case-UI directory
+$ cd ..
+$ make build
+$ make run
 ```
+
+> [!Note]
+> The [Makefile](./Makefile) file uses `docker` command to build and execute the container. If you wish to use `podman`, replacing the `docker` command by `podman` in `Makefile` should be enough.
 
 You can check the logs in `log/client.log`
 

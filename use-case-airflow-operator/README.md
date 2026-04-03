@@ -43,7 +43,7 @@ You just need to do the following:
 ```bash
 python -m venv .demo-env
 source .demo-env/bin/activate
-pip install apache-airflow pyfirecrest==3.0.1
+pip install apache-airflow pyfirecrest==3.7.1
 ```
 
 ### Launching Airflow

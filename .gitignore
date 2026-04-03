@@ -5,3 +5,7 @@ __pycache__/
 use-case-UI/src/client_solved.py
 use-case-UI/src/config.py
 *venv_demo
+*demo-env
+*.env
+.DS_Store
+.vscode/

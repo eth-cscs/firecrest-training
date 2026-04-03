@@ -1,6 +1,6 @@
-## Using pyfirecrest to access the API
+# Using PyFirecrest to access the API
 
-## How to use pyfirecrest
+## How to use PyFirecrest
 
 ### Setting up the authentication
 
@@ -62,7 +62,7 @@ client = f7t.v2.Firecrest(
 systems = client.systems()
 print(systems)
 
-## Exercise:
+## Exercises:
 
 # 1. Get the username of the user
 # 2. List the contents of a directory
@@ -129,7 +129,7 @@ if download_obj:
 
 You can check all the details of the external download in the [docs](https://eth-cscs.github.io/firecrest-v2/user_guide/#downloading-large-files) with examples in different programming languages.
 
-**[Optional]** You can also try to do this in the CLI of pyfirecrest.
+**[Optional]** You can also try to do this in the CLI of PyFirecREST.
 
 ## External upload with pyfirecrest
 
@@ -180,4 +180,4 @@ if upload_obj:
     upload_obj.wait_for_transfer_job(timeout=None)
 ```
 
-**[Optional]** You can also try to do this in the CLI of pyfirecrest.
+**[Optional]** You can also try to do this in the CLI of PyFirecREST.
