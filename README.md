@@ -244,13 +244,13 @@ With your favorite IDE or text editor, open the Python file [`pyfirecrest_exampl
 
 - Verify the username in the remote system:
 
-> [!TIP]
-> You can use `firecrest <subcommand> --help` for more information on how to use FirecREST CLI subcommands
+  > [!TIP]
+  > You can use `firecrest <subcommand> --help` for more information on how to use FirecREST CLI subcommands
 
-    ```bash
-    (pyfirecrest-demo-env) firecrest id --system daint
-    uid=10001(course-user) gid=1999(cug-training) groups=1999(cug-training)
-    ```
+  ```bash
+  (pyfirecrest-demo-env) firecrest id --system daint
+  uid=10001(course-user) gid=1999(cug-training) groups=1999(cug-training)
+  ```
 
 - List directories in a filesystem
 
