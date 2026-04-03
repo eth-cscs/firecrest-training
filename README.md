@@ -62,8 +62,8 @@ Participants will be guided by the instructors through these steps:
 After this is done, you will see the `Consumer Key` and `Consumer Secret`: you'll need them for the next steps of the tutorial.
 
   > [!WARNING]
-  > The pair Consumer Key and Consumer Secret are access keys to computational resources at CSCS. Are only meant for this course, but please don't share them and keep them securely stored in your laptop.
-  > Keys and access to the systems will be removed after the Tutorial.
+  > The pair **Consumer Key** and **Consumer Secret** are access keys to computational resources at CSCS. Are only meant for this course, but please don't share them and keep them securely stored in your laptop.
+  > Keys and access to the systems will be deactivated after the Tutorial.
 
 ### Test the setup
 
@@ -107,6 +107,19 @@ If the setup is correct you should see in the response the code `200` and in the
         },
 ```
 
+> [!TIP]
+> If you face issues setting up your API credentials, visit the [CSCS documentation](https://docs.cscs.ch/services/devportal/#getting-started) for clarification.
+
+### Additional information
+
+To avoid disruptions in the tutorial, a reservation has been prepared to schedule jobs on SLURM at CSCS in the vCluster `daint`. 
+
+Use the following information when needed:
+
+- System to use: `daint`
+- Scheduler reservation: TBD (i.e.: to use in `#SBATCH --reservation=<reservation>`):
+- Filesystem: `/capstor/scratch/cscs/<username>` (`username` is informed by the instructor)
+
 ### Now... who are you?
 
 Participants have received courses accounts. The API keys (Consumer Key and Consumer Secret) are bounded to that user, then all the calls to FirecREST API will be on behalf of that user.
@@ -142,8 +155,8 @@ Participants have received courses accounts. The API keys (Consumer Key and Cons
     $ (pyfirecrest-demo-env) vi .env
     #!/bin/bash
 
-    export FIRECREST_CLIENT_ID="<Customer-Key>" # <-- update here
-    export FIRECREST_CLIENT_SECRET="<Customer-Secret>" # <-- update here
+    export FIRECREST_CLIENT_ID="<Consumer-Key>" # <-- update here
+    export FIRECREST_CLIENT_SECRET="<Consumer-Secret>" # <-- update here
     export FIRECREST_URL="https://api.cscs.ch/hpc/firecrest/v2"
     export AUTH_TOKEN_URL="https://auth.cscs.ch/auth/realms/firecrest-clients/protocol/openid-connect/token"
     export BASE_DIRECTORY="/capstor/scratch/cscs"
@@ -230,8 +243,9 @@ With your favorite IDE or text editor, open the Python file [`pyfirecrest_exampl
     ```
 
 - Verify the username in the remote system:
-    > [!TIP]
-    > You can use `firecrest <subcommand> --help` for more information on how to use FirecREST CLI subcommands
+
+> [!TIP]
+> You can use `firecrest <subcommand> --help` for more information on how to use FirecREST CLI subcommands
 
     ```bash
     (pyfirecrest-demo-env) firecrest id --system daint
