@@ -242,10 +242,10 @@ With your favorite IDE or text editor, open the Python file [`pyfirecrest_exampl
     (···)    
     ```
 
-- Verify the username in the remote system:
+> [!TIP]
+> You can use `firecrest <subcommand> --help` for more information on how to use FirecREST CLI subcommands
 
-  > [!TIP]
-  > You can use `firecrest <subcommand> --help` for more information on how to use FirecREST CLI subcommands
+- Verify the username in the remote system:
 
   ```bash
   (pyfirecrest-demo-env) firecrest id --system daint
