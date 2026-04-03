@@ -47,7 +47,6 @@ Follow the Configuration guide to adapt your client credentials to the app.
 - For **debugging** purposes, leave the default values in the variables `SBATCH_TEMPLATE`, `PROBLEM_INI_FILE`, `PROBLEM_MSH_FILE`, and `POST_TEMPLATE`.
 - For **testing a "real"** case, use:
 
-
     ```python
     ...
     class DevConfig(Config):

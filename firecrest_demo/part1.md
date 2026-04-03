@@ -21,7 +21,8 @@ Here is a quick overview of the methods:
 | PUT    | Used for creating/updating resources.* |
 | DELETE | Used for deleting resources.           |
 
-> \* The difference between `POST` and `PUT` is that `PUT` requests are idempotent. That is, calling the same `PUT` request multiple times will always produce the same result. In contrast, calling a `POST` request repeatedly have side effects of creating the same resource multiple times.
+> [!TIP]
+> The difference between `POST` and `PUT` is that `PUT` requests are idempotent. That is, calling the same `PUT` request multiple times will always produce the same result. In contrast, calling a `POST` request repeatedly have side effects of creating the same resource multiple times.
 
 Similar to the requests, the response of FirecREST will consist of:
 

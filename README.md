@@ -80,26 +80,31 @@ If the setup is correct you should see in the response the code `200` and in the
   "systems": [
     {
       "name": "eiger",
-      "ssh": {
-        "host": "eiger.alps.cscs.ch",
-        "port": 22,
-        "proxyHost": null,
-        "proxyPort": null,
-        "maxClients": 100,
-        "timeout": {
-          "connection": 5,
-          "login": 5,
-          "commandExecution": 5,
-          "idleTimeout": 60,
-          "keepAlive": 5
-        }
-      },
-      "scheduler": {
-        "type": "slurm",
-        "connectionMode": "ssh",
-        "version": "24.05.4",
-        "apiUrl": null,
-        "apiVersion": null,
+      (···)
+      {
+        "name": "daint",
+        "ssh": {
+            "host": "daint.alps.cscs.ch",
+            "port": 22,
+            "proxyHost": null,
+            "proxyPort": null,
+            "maxClients": 100,
+            "timeout": {
+                "connection": 5,
+                "login": 5,
+                "commandExecution": 5,
+                "idleTimeout": 60,
+                "keepAlive": 5
+            }
+        },
+        "scheduler": {
+            "type": "slurm",
+            "connectionMode": "ssh",
+            "version": "25.05.4",
+            "apiUrl": null,
+            "apiVersion": null,
+            "timeout": 10
+        },
 ```
 
 ### Now... who are you?
@@ -195,13 +200,33 @@ With your favorite IDE or text editor, open the Python file [`pyfirecrest_exampl
     [
         {
             "name": "eiger",
+            (···)
+        },
+        {
+            "name": "daint",
             "ssh": {
-                "host": "eiger.alps.cscs.ch",
+                "host": "daint.alps.cscs.ch",
                 "port": 22,
                 "proxyHost": null,
                 "proxyPort": null,
                 "maxClients": 100,
-    (...)
+                "timeout": {
+                    "connection": 5,
+                    "login": 5,
+                    "commandExecution": 5,
+                    "idleTimeout": 60,
+                    "keepAlive": 5
+                }
+            },
+            "scheduler": {
+                "type": "slurm",
+                "connectionMode": "ssh",
+                "version": "25.05.4",
+                "apiUrl": null,
+                "apiVersion": null,
+                "timeout": 10
+            },
+    (···)    
     ```
 
 - Verify the username in the remote system:
