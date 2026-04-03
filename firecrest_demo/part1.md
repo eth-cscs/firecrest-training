@@ -2,7 +2,7 @@
 
 ## HTTP requests
 
-[FirecREST API]((https://firecrest-api.cscs.ch/)) is based on REST principles: data resources are accessed via standard HTTP requests to an API endpoint.
+[FirecREST API](https://eth-cscs.github.io/firecrest-v2/openapi/) is based on REST principles: data resources are accessed via standard HTTP requests to an API endpoint.
 
 Every request is made of:
 
@@ -21,7 +21,8 @@ Here is a quick overview of the methods:
 | PUT    | Used for creating/updating resources.* |
 | DELETE | Used for deleting resources.           |
 
-> \* The difference between `POST` and `PUT` is that `PUT` requests are idempotent. That is, calling the same `PUT` request multiple times will always produce the same result. In contrast, calling a `POST` request repeatedly have side effects of creating the same resource multiple times.
+> [!TIP]
+> The difference between `POST` and `PUT` is that `PUT` requests are idempotent. That is, calling the same `PUT` request multiple times will always produce the same result. In contrast, calling a `POST` request repeatedly have side effects of creating the same resource multiple times.
 
 Similar to the requests, the response of FirecREST will consist of:
 
@@ -37,7 +38,6 @@ Here is a quick overview of the status codes and their meaning.
 | 3xx | Redirection | Indicates that the client must take some additional action in order to complete their request. |
 | 4xx | Client Error | This category of error status codes points the finger at clients. |
 | 5xx | Server Error | The server takes responsibility for these error status codes. |
-
 
 ## Obtain credentials
 
@@ -237,14 +237,15 @@ We should get some response like this:
 }
 ```
 
-## Interracting with the scheduler
+## Interacting with the scheduler
 
 FirecREST offers three basic functionalities of the scheduler:
-1. submit jobs on behalf of a user,
-1. poll for the jobs of the user and
-1. cancel jobs.
 
-## The `compute` workflow
+1. submit jobs on behalf of a user,
+2. poll for the jobs of the user and
+3. cancel jobs.
+
+### The `compute` workflow
 
 On FirecREST v2 may be interacting with Slurm through the [Slurm API](https://slurm.schedmd.com/rest.html) or by dispatching the relevant commands on the login node and parsing the results, eg. `sbatch`, `sacct`, `scancel` etc.
 
@@ -257,7 +258,7 @@ with open(local_path, 'r') as f:
     data = {
         'job': {
             'script': f.read(),
-            'working_directory': '/scratch/snx3000/eirinik',
+            'working_directory': '/capstor/scratch/cscs/<username>',
         }
     }
 
