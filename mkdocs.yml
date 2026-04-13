@@ -1,0 +1,49 @@
+site_name: FirecREST Training
+site_description: CUG-26 Tutorial – Programmatic Access to HPC resources with FirecREST API
+repo_url: https://github.com/eth-cscs/firecrest-training
+repo_name: eth-cscs/firecrest-training
+
+theme:
+  name: material
+  favicon: imgs/favicon.ico
+  logo: imgs/firecrest_logo_noletters.png
+  palette:
+    primary: white
+    accent: deep orange
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - open-in-new-tab
+
+nav:
+  - Introduction: index.md
+  - Setup: setup.md
+  - Demo: demo.md    
+  - Use Cases:
+    - use-cases/index.md
+    - CI/CD Pipeline: use-cases/ci-pipeline.md
+    - Web UI: use-cases/ui.md
+    - Airflow Operator: use-cases/airflow.md
+  - FirecREST in your laptop: container.md
