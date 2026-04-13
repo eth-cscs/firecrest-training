@@ -2,7 +2,7 @@
 
 ## Goal of the exercise
 
-Create a CI/CD pipeline that will run in Piz Daint.
+Create a CI/CD pipeline that will run in a real HPC Cluster.
 In the repository you can find the code that is tested and the pipeline is mostly set up so you will only need to fill the parts that will submit the job in the supercomputer and the processing of the results.
 
 ## Prerequisites
@@ -45,7 +45,7 @@ Even if you have experience with another programming language, you'll likely fin
     You can follow the progress of the workflow in the "Actions" tab and ensure that the tests ran successfully, and the job was submitted to Piz Daint without issues.
 
 1. **[Optional] Apply this to your own codes:**
-    If you are familiar with another CI platform and you have code that you would like to test on Piz Daint we can help you set up the CI.
+    If you are familiar with another CI platform and you have code that you would like to test on an HPC Cluster via FirecREST, we can help you set up the CI.
 
 ## Additional Resources
 
