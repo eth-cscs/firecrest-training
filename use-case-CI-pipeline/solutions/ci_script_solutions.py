@@ -50,7 +50,7 @@ def main():
         "--system", default=os.environ.get("FIRECREST_SYSTEM"), help="choose system to run"
     )
     parser.add_argument("--branch", default="main", help="branch to be tested")
-    parser.add_argument("--account", default="csstaff", help="branch to be tested")
+    parser.add_argument("--account", default="csstaff", help="scheduler account to be tested")
     parser.add_argument("--repo", help="repository to be tested")
 
     args = parser.parse_args()
