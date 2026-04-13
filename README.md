@@ -118,7 +118,7 @@ Use the following information when needed:
 
 - System to use: `daint`
 - Scheduler reservation: TBD (i.e.: to use in `#SBATCH --reservation=<reservation>`):
-- Filesystem: `/capstor/scratch/cscs/<username>` (`username` is informed by the instructor)
+- Filesystem: `/capstor/scratch/cscs/<username>` (replace `<username>` with the username informed by the instructor, it will be something similar to `course_NNNNN`)
 
 ### Now... who are you?
 

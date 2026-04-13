@@ -68,6 +68,7 @@ When Airflow standalone starts, it creates an `admin` user and generates credent
 This password is set on `$AIRFLOW_HOME/standalone_admin_password.txt`
 
 If you want to change the port where Airflow is running, edit the file `$AIRFLOW_HOME/airflow.cfg` and set the `webserver_port` variable under the `[api]` section to a different port number
+
 ```cfg
 [api]
 (...)

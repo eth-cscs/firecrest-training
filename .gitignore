@@ -9,3 +9,4 @@ use-case-UI/src/config.py
 *.env
 .DS_Store
 .vscode/
+.github/copilot-instructions.md
