@@ -1,0 +1,29 @@
+{
+  "name": "firecrest-training-docs",
+  "build": {
+    "dockerfile": "Containerfile"
+  },
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "mkdocs serve",
+      "onAutoForward": "notify"
+    }
+  },
+  "mounts": [
+    {
+      "target": "${containerWorkspaceFolder}/.venv",
+      "type": "volume"
+    }
+  ],
+  "postCreateCommand": "uv venv --no-cache --prompt docs --no-project && uv pip install --no-cache -r docs/requirements.txt",
+  "postAttachCommand": "uv run --no-cache mkdocs serve --livereload --clean --dev-addr=127.0.0.1:8000",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "DavidAnson.vscode-markdownlint",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  }
+}
