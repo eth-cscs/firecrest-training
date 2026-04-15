@@ -12,11 +12,12 @@
   },
   "mounts": [
     {
+      "source": "docs-venv-${localWorkspaceFolderBasename}-${devcontainerId}",
       "target": "${containerWorkspaceFolder}/.venv",
       "type": "volume"
     }
   ],
-  "postCreateCommand": "uv venv --no-cache --prompt docs --no-project && uv pip install --no-cache -r docs/requirements.txt",
+  "postCreateCommand": "uv venv --allow-existing --no-cache --prompt docs --no-project && uv pip install --no-cache -r docs/requirements.txt",
   "postAttachCommand": "uv run --no-cache mkdocs serve --livereload --clean --dev-addr=127.0.0.1:8000",
   "customizations": {
     "vscode": {
