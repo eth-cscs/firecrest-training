@@ -11,7 +11,7 @@ The environment is defined using the [Compose specification][compose-spec], and 
 The containerized is useful for
 
 * Understanding of how FirecREST interacts with other infrastructure components
-* Exploring how FirecREST can be configured to interact with local supercomputing infrastructure
+* Exploring how FirecREST can be configured to interact with your own local supercomputing infrastructure
 * Testing and developing user workflows with FirecREST
 
 [compose-spec]: https://compose-spec.io/
