@@ -30,6 +30,34 @@ After the session, attendees will be equipped to deploy the environment for them
 
 ## 0. Setup
 
+The host on which the containerised environment is deployed requires the following:
+
+1. OCI container engine (**[Podman][podman]**, [Docker][docker], [nerdctl][nerdctl])
+1. Compose compatible orchestrator (**[Docker Compose][docker-compose]**, [Podman Compose][podman-compose], [nerdctl][nerdctl])
+1. Tool for making HTTP requests (**[curl][curl]**, [httpie][httpie], Python [requests][python-requests])
+1. Tool for parsing JSON (**[jq][jq]**, [yq][yq], Python standard library [json][python-json])
+1. **[Git][git]** version control system
+
+In this demo, the tools in **bold** above are used, but the instructions should generalise to other combinations.
+
+!!! note "`podman compose`"
+    This demo uses the Podman container engine and Docker Compose orchestrator using the [`podman compose`][podman-compose-command-man-page] command. Docker Compose is the reference implementation of the [Compose spec][compose-spec] and widely supported.
+
+    Confusingly, running the `podman compose` command from does not imply using the [Podman Compose][podman-compose] orchestrator. The `podman compose` command will default to using Docker Compose as orchestrator if available on the system (but can also use Podman Compose as orchestrator).
+
+[podman]: https://podman.io/
+[docker]: https://www.docker.com/
+[nerdctl]: https://github.com/containerd/nerdctl
+[podman-compose]: https://github.com/containers/podman-compose
+[podman-compose-command-man-page]: https://docs.podman.io/en/latest/markdown/podman-compose.1.html
+[curl]: https://curl.se/
+[httpie]: https://httpie.io/
+[python-requests]: https://docs.python-requests.org/
+[jq]: https://jqlang.org/
+[yq]: https://github.com/mikefarah/yq
+[python-json]: https://docs.python.org/3/library/json.html
+[git]: https://git-scm.com/
+
 ## 1. Deploy the environment
 
 ## 2. Explore the environment
