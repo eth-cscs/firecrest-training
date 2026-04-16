@@ -127,4 +127,32 @@ For this demo, we will be exploring the API using command line tools.
 
 [services-compose-spec]: https://github.com/compose-spec/compose-spec/blob/main/05-services.md
 
-## 4. Interact with other components
+## 3. Acquire an access token
+
+## 4. Call the FirecREST API
+
+### `curl`
+
+### pyfirecrest
+
+## 5. Interact with other components
+
+We can also access the web interfaces and APIs of other service components.
+
+Open the Keycloak web UI by going to <http://localhost:8080/auth>
+
+![Screenshot of web browser showing Keycloak login page](imgs/keycloak-login-page.png)
+
+You can log in to the containerised Keycloak service with preconfigured admin credentials.
+
+!!! info "Keycloak admin credentials"
+    For the containerised development environment, Keycloak admin credentials are set to
+
+    **Username:** admin  
+    **Password:** admin2
+
+    In production secure, secret credentials should be used!
+
+This is useful for exploring and developing IAM configuration associated with FirecREST. For example, opening the "Clients" page in the realm "kcrealm" will show OpenID Connect clients configured for use with FirecREST.
+
+![Screenshot of web browser showing list of clients configured for the realm "kcrealm"](imgs/keycloak-kcrealm-clients.png)
