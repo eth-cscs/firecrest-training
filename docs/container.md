@@ -89,6 +89,42 @@ firecrest-v2        running(5)          /path/to/firecrest-v2/docker-compose.yml
 
 ## 2. Explore the environment
 
-## 3. Call the FirecREST API
+List the running containers in the project
+
+```shell-session
+$ podman compose -p firecrest-v2 ps       
+NAME                       IMAGE                                  COMMAND                  SERVICE     CREATED          STATUS          PORTS
+firecrest-v2-firecrest-1   docker.io/library/firecrestv2:latest   "sh -c python3 -Xfro…"   firecrest   16 minutes ago   Up 16 minutes   127.0.0.1:5678->5678/tcp, 127.0.0.1:8000->5000/tcp
+firecrest-v2-keycloak-1    quay.io/keycloak/keycloak:26.0.7       "start-dev --http-re…"   keycloak    16 minutes ago   Up 17 minutes   127.0.0.1:8080->8080/tcp, 8443/tcp, 127.0.0.1:9090->9000/tcp
+firecrest-v2-minio-1       docker.io/minio/minio:latest           "minio server /data …"   minio       16 minutes ago   Up 17 minutes   127.0.0.1:9000-9001->9000-9001/tcp
+firecrest-v2-pbs-1         docker.io/library/openpbs:23.06.06     "/usr/bin/supervisord"   pbs         16 minutes ago   Up 17 minutes   5432/tcp, 15004-15007/tcp, 127.0.0.1:15001-15003->15001-15003/tcp, 127.0.0.1:2223->22/tcp
+firecrest-v2-slurm-1       docker.io/library/slurm:latest         ""                       slurm       16 minutes ago   Up 16 minutes   127.0.0.1:5665-5666->5665-5666/tcp, 127.0.0.1:6820->6820/tcp, 127.0.0.1:2222->22/tcp
+```
+
+The "Service" column shows how the containers are mapped to the [Compose services][services-compose-spec] defined in [`docker-compose.yml`][docker-compose-firecrest-v2-github].
+
+The "Ports" column shows which ports the containerised services are bound to.
+
+The services running in the Compose project map to the components of the full FirecREST architecture
+
+![Diagram illustrating architecture of FirecREST and integration with other infrastructure components](imgs/arch_complete_infra.svg)
+
+| Architecture component       | Containerised service |
+| ---------------------------- | --------------------- |
+| Identity provider            | `keycloak`            |
+| Workload scheduler & manager | `slurm` and `pbs`     |
+| Object storage               | `minio`               |
+
+View the FirecREST Swagger UI in a web browser by going to <http://localhost:8000/docs>
+
+![Screenshot of web browser showing FirecREST Swagger UI](imgs/f7t-containerized-swagger-ui.png)
+
+It is possible to make requests to the API endpoints from the Swagger UI. For example, selecting the "Try it out" button and then "Execute" button for the unauthenticated `/status/liveness/` endpoint makes a GET request and the response is displayed in the browser.
+
+![Screenshot of web browser showing response from /status/liveness endpoint in FirecREST Swagger UI](imgs/liveness-response-f7t-containerized-swagger-ui.png)
+
+For this demo, we will be exploring the API using command line tools.
+
+[services-compose-spec]: https://github.com/compose-spec/compose-spec/blob/main/05-services.md
 
 ## 4. Interact with other components
