@@ -60,6 +60,33 @@ In this demo, the tools in **bold** above are used, but the instructions should 
 
 ## 1. Deploy the environment
 
+Clone the [firecrest-v2 GitHub repository][firecrest-v2-github] and check out release v2.5.0
+
+```shell
+git clone https://github.com/eth-cscs/firecrest-v2.git
+cd firecrest-v2
+git switch --detach 2.5.0
+```
+
+Bring up the Compose project
+
+```shell
+podman compose -f docker-compose.yml up
+```
+
+This will pull and build the necessary container images and build the containerised environment as defined in [`docker-compose.yml`][docker-compose-firecrest-v2-github].
+The first time this is done, it may take a few minutes to completely bring up the environment.
+
+Confirm that the Compose project is running
+
+```shell-session
+$ podman compose ls
+NAME                STATUS              CONFIG FILES
+firecrest-v2        running(5)          /path/to/firecrest-v2/docker-compose.yml
+```
+[firecrest-v2-github]: https://github.com/eth-cscs/firecrest-v2
+[docker-compose-firecrest-v2-github]: https://github.com/eth-cscs/firecrest-v2/blob/2.5.0/docker-compose.yml
+
 ## 2. Explore the environment
 
 ## 3. Call the FirecREST API
