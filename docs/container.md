@@ -344,3 +344,11 @@ You can log in to the containerised Keycloak service with preconfigured admin cr
 This is useful for exploring and developing IAM configuration associated with FirecREST. For example, opening the "Clients" page in the realm "kcrealm" will show OpenID Connect clients configured for use with FirecREST.
 
 ![Screenshot of web browser showing list of clients configured for the realm "kcrealm"](imgs/keycloak-kcrealm-clients.png)
+
+## 6. Clean up
+
+Stop the Compose project and remove associated resources
+
+```shell
+podman compose -p firecrest-v2 down
+```
