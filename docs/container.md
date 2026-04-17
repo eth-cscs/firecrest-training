@@ -240,9 +240,69 @@ $ jq '[.iat, .exp] | map(todateiso8601)' <<<"$DECODED_PAYLOAD"
 
 ## 4. Call the FirecREST API
 
+The access token can be used authorize access to FirecREST API endpoints
+
 ### `curl`
 
-### pyfirecrest
+Call the `/status/systems` endpoint using bearer authorization
+
+```shell
+curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" http://localhost:8000/status/systems
+```
+
+This will produce a lot of output, so it is helpful to filter down to the information we are interested in, e.g. cluster names
+
+```shell-session
+$ curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" http://localhost:8000/status/systems | jq '.systems[] | .name'
+"cluster-slurm-api"
+"cluster-slurm-ssh"
+"cluster-pbs"
+```
+
+Find information about the partitions on `cluster-slurm-ssh` by calling the `/status/{system_name}/partitions` endpoint
+
+```shell
+curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" http://localhost:8000/status/cluster-slurm-ssh/partitions | jq '.'
+```
+
+The response is a JSON object containing partition information on cluster `cluster-slurm-ssh`
+
+```json
+{
+  "partitions": [
+    {
+      "name": "part01",
+      "cpus": 2,
+      "totalNodes": 1,
+      "partition": "UP"
+    },
+    {
+      "name": "part02",
+      "cpus": 2,
+      "totalNodes": 1,
+      "partition": "UP"
+    },
+    {
+      "name": "xfer",
+      "cpus": 2,
+      "totalNodes": 1,
+      "partition": "UP"
+    }
+  ]
+}
+```
+
+Submit a job to the `cluster-slurm-ssh` cluster using the `/compute/{system_name}/jobs` endpoint
+
+<!-- TODO -->
+
+View the contents of the job's output file using the `filesystem/cluster-slurm-ssh/ops/view` endpoint
+
+<!-- TODO -->
+
+In this demo we have used `curl` and `jq` to briefly explore the FirecREST API presented in the containerised environment. When developing in Python, the [PyFirecREST][pyfirecrest-github] library provides a convenient Python wrapper for working with the API, but fundamentally any tool, language, or library capable of making HTTP requests and parsing JSON responses can be used.
+
+[pyfirecrest-github]: https://github.com/eth-cscs/pyfirecrest
 
 ## 5. Interact with other components
 
