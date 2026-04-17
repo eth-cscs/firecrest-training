@@ -1,4 +1,21 @@
 # FirecREST in your laptop
+<!-- markdownlint-configure-file 
+{
+    "default": true,
+    "MD007": {
+        "indent": 4
+    },
+    "MD013": false,
+    "MD014": false,
+    "MD046": false,
+    "MD024": {
+        "siblings_only": true
+    },
+    "MD033": false,
+    "MD046": false,
+    "MD053": false
+}
+-->
 
 ## Introduction
 
@@ -87,6 +104,7 @@ $ podman compose ls
 NAME                STATUS              CONFIG FILES
 firecrest-v2        running(5)          /path/to/firecrest-v2/docker-compose.yml
 ```
+
 [firecrest-v2-github]: https://github.com/eth-cscs/firecrest-v2
 [docker-compose-firecrest-v2-github]: https://github.com/eth-cscs/firecrest-v2/blob/2.5.0/docker-compose.yml
 
@@ -136,7 +154,7 @@ In order to make authorized calls to the FirecREST API, we need to acquire an Op
 
 In the containerised environment, FirecREST has been configured to validate the signature on the access token ([JSON Web Token, JWT][jwt.io]) using the public key advertised by Keycloak.
 
-Acquire an access token from Keycloak using `curl` by a request to Keycloak's [token endpoint][token-endpoint-keycloak] with the client credentials grant. 
+Acquire an access token from Keycloak using `curl` by a request to Keycloak's [token endpoint][token-endpoint-keycloak] with the client credentials grant.
 
 First set some environment variables:
 
@@ -157,7 +175,7 @@ export ACCESS_TOKEN=$(curl -s ${AUTH_TOKEN_URL} \
 ```
 
 !!! info "Client credentials flow"
-    Keycloak has been configured with a client with the OAuth 2.0 [client credentials flow][client-credentials-grant-rfc6749] enabled. This enables the client to exchange a client ID and secret for an access token. 
+    Keycloak has been configured with a client with the OAuth 2.0 [client credentials flow][client-credentials-grant-rfc6749] enabled. This enables the client to exchange a client ID and secret for an access token.
 
     The client credentials flow is often used for machine-to-machine communication, where an application is authenticating on behalf of itself, rather than a human user, see the [auth0 docs for details][client-credentials-auth0-docs].
 
@@ -236,6 +254,7 @@ $ jq '[.iat, .exp] | map(todateiso8601)' <<<"$DECODED_PAYLOAD"
 ```
 
 [jwt.io]: https://www.jwt.io/
+[token-endpoint-keycloak]: https://www.keycloak.org/securing-apps/oidc-layers#_token_endpoint
 [client-credentials-grant-rfc6749]: https://datatracker.ietf.org/doc/html/rfc6749#section-4.4
 [client-credentials-auth0-docs]: https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow
 [cscs-dev-portal]: https://developer.cscs.ch/
