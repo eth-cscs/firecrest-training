@@ -163,10 +163,12 @@ export ACCESS_TOKEN=$(curl -s ${AUTH_TOKEN_URL} \
 
     During the [setup process](./setup.md) for accessing FirecREST in production, client credentials were generated using the [CSCS Developer portal][cscs-dev-portal]. 
     
-    For the containerised deployment, client credentials used to obtain tokens from Keycloak for FirecREST API access are preconfigured and static:
+    For the containerised deployment, the client credentials used to obtain tokens from Keycloak for FirecREST API access are preconfigured and static:
 
     * **Client ID**: firecrest-test-client
     * **Client secret**: wZVHVIEd9dkJDh9hMKc6DTvkqXxnDttk
+
+    In production secure, secret credentials should be used!
 
 The JWT is a sequence of "."-delimited URL-safe base64-encoded values (`<header>.<payload>.<signature>`). We can decode the payload with a short Python script, and then pretty-print this with `jq`:
 
