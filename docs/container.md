@@ -36,6 +36,7 @@ The host on which the containerised environment is deployed requires the followi
 1. Compose compatible orchestrator (**[Docker Compose][docker-compose]**, [Podman Compose][podman-compose], [nerdctl][nerdctl])
 1. Tool for making HTTP requests (**[curl][curl]**, [httpie][httpie], Python [requests][python-requests])
 1. Tool for parsing JSON (**[jq][jq]**, [yq][yq], Python standard library [json][python-json])
+1. Tool for decoding base64 strings (**[Python][python]** interpreter, [base64][base64-gnu-coreutils])
 1. **[Git][git]** version control system
 
 In this demo, the tools in **bold** above are used, but the instructions should generalise to other combinations.
@@ -57,6 +58,8 @@ In this demo, the tools in **bold** above are used, but the instructions should 
 [yq]: https://github.com/mikefarah/yq
 [python-json]: https://docs.python.org/3/library/json.html
 [git]: https://git-scm.com/
+[python]: https://www.python.org/
+[base64-gnu-coreutils]: https://www.gnu.org/software/coreutils/manual/html_node/base64-invocation.html
 
 ## 1. Deploy the environment
 
@@ -128,6 +131,112 @@ For this demo, we will be exploring the API using command line tools.
 [services-compose-spec]: https://github.com/compose-spec/compose-spec/blob/main/05-services.md
 
 ## 3. Acquire an access token
+
+In order to make authorized calls to the FirecREST API, we need to acquire an OpenID Connect/OAuth 2.0 access token.
+
+In the containerised environment, FirecREST has been configured to validate the signature on the access token ([JSON Web Token, JWT][jwt.io]) using the public key advertised by Keycloak.
+
+Acquire an access token from Keycloak using `curl` by a request to Keycloak's [token endpoint][token-endpoint-keycloak] with the client credentials grant. 
+
+First set some environment variables:
+
+```shell
+export FIRECREST_CLIENT_ID="firecrest-test-client"
+export FIRECREST_CLIENT_SECRET="wZVHVIEd9dkJDh9hMKc6DTvkqXxnDttk"
+export AUTH_TOKEN_URL="http://localhost:8080/auth/realms/kcrealm/protocol/openid-connect/token"
+```
+
+Then make a HTTP request to the token endpoint, extracting the access token from the response using `jq` and storing in an environment variable:
+
+```shell
+export ACCESS_TOKEN=$(curl -s ${AUTH_TOKEN_URL} \
+  -d "grant_type=client_credentials" \
+  -d "client_id=${FIRECREST_CLIENT_ID}" \
+  -d "client_secret=${FIRECREST_CLIENT_SECRET}" \
+  | jq -r '.access_token')
+```
+
+!!! info "Client credentials flow"
+    Keycloak has been configured with a client with the OAuth 2.0 [client credentials flow][client-credentials-grant-rfc6749] enabled. This enables the client to exchange a client ID and secret for an access token. 
+
+    The client credentials flow is often used for machine-to-machine communication, where an application is authenticating on behalf of itself, rather than a human user, see the [auth0 docs for details][client-credentials-auth0-docs].
+
+    During the [setup process](./setup.md) for accessing FirecREST in production, client credentials were generated using the [CSCS Developer portal][cscs-dev-portal]. 
+    
+    For the containerised deployment, client credentials used to obtain tokens from Keycloak for FirecREST API access are preconfigured and static:
+
+    * **Client ID**: firecrest-test-client
+    * **Client secret**: wZVHVIEd9dkJDh9hMKc6DTvkqXxnDttk
+
+The JWT is a sequence of "."-delimited URL-safe base64-encoded values (`<header>.<payload>.<signature>`). We can decode the payload with a short Python script, and then pretty-print this with `jq`:
+
+```shell
+DECODED_PAYLOAD=$(python3 -c "
+import os
+import base64
+payload = os.environ['ACCESS_TOKEN'].split('.')[1]
+padding = '=' * ((4 - len(payload) % 4) % 4)
+print(base64.urlsafe_b64decode(payload + padding).decode())
+")
+jq <<<"${DECODED_PAYLOAD}"
+```
+
+The result will look something like the following
+
+```json
+{
+  "exp": 1776440235,
+  "iat": 1776439935,
+  "jti": "795cad00-a876-4df4-aa6a-cbb1779b35fc",
+  "iss": "http://localhost:8080/auth/realms/kcrealm",
+  "aud": [
+    "Firecrest-v2",
+    "account"
+  ],
+  "sub": "fireuser",
+  "typ": "Bearer",
+  "azp": "firecrest-test-client",
+  "acr": "1",
+  "realm_access": {
+    "roles": [
+      "default-roles-kcrealm",
+      "offline_access",
+      "uma_authorization"
+    ]
+  },
+  "resource_access": {
+    "account": {
+      "roles": [
+        "manage-account",
+        "manage-account-links",
+        "view-profile"
+      ]
+    }
+  },
+  "scope": "firecrest-v2 profile email",
+  "email_verified": false,
+  "clientId": "firecrest-test-client",
+  "clientHost": "192.168.240.3",
+  "preferred_username": "service-account-firecrest-test-client",
+  "clientAddress": "192.168.240.3",
+  "username": "fireuser"
+}
+```
+
+The access token is only valid for a short period minutes, so will need to be requested periodically. We can check the issued at (`iat`) and expiration time (`exp`) claims to see the length of time is 5 minutes:
+
+```console
+$ jq '[.iat, .exp] | map(todateiso8601)' <<<"$DECODED_PAYLOAD"
+[
+  "2026-04-17T15:32:15Z",
+  "2026-04-17T15:37:15Z"
+]
+```
+
+[jwt.io]: https://www.jwt.io/
+[client-credentials-grant-rfc6749]: https://datatracker.ietf.org/doc/html/rfc6749#section-4.4
+[client-credentials-auth0-docs]: https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow
+[cscs-dev-portal]: https://developer.cscs.ch/
 
 ## 4. Call the FirecREST API
 
