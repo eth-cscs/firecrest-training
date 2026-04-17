@@ -240,9 +240,7 @@ $ jq '[.iat, .exp] | map(todateiso8601)' <<<"$DECODED_PAYLOAD"
 
 ## 4. Call the FirecREST API
 
-The access token can be used authorize access to FirecREST API endpoints
-
-### `curl`
+The access token can be used authorize access to FirecREST API endpoints.
 
 Call the `/status/systems` endpoint using bearer authorization
 
