@@ -352,3 +352,7 @@ Stop the Compose project and remove associated resources
 ```shell
 podman compose -p firecrest-v2 down
 ```
+
+## Epilogue
+
+<!-- TODO -->
