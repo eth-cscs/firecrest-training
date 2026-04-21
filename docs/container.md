@@ -63,6 +63,63 @@ In this demo, the tools in **bold** above are used, but the instructions should 
 
     Confusingly, running the `podman compose` command from does not imply using the [Podman Compose][podman-compose] orchestrator. The `podman compose` command will default to using Docker Compose as orchestrator if available on the system (but can also use Podman Compose as orchestrator).
 
+??? info "Quick start: Lima"
+    [Lima][lima-vm] is a tool for easily launching and managing virtual machines.
+    It can be used to quickly bring up a virtual machine suitable for deploying and working with the containerised environment:
+
+    [Install Lima][installation-lima-vm], e.g. from [Homebrew]
+
+    ```shell
+    brew install lima
+    ```
+
+    Create a VM instance from the [Podman template][podman-template-lima-vm] named `f7t-podman`
+
+    ```shell
+    limactl create --name=f7t-podman --cpus=5 --disk=50 --memory=4 --mount-none template:podman
+    ```
+
+    Start the instance
+
+    ```shell
+    limactl start f7t-podman
+    ```
+
+    Start a shell in the instance
+
+    ```shell
+    limactl shell f7t-podman
+    ```
+
+    Upgrade packages and install Docker Compose (plus other useful tools)
+
+    ```shell
+    sudo dnf --refresh upgrade
+    sudo dnf install curl docker-compose git jq python3 tmux vim-enhanced
+    ```
+
+    Set some Podman configuration values
+
+    ```shell
+    mkdir -v -p ${XDG_CONFIG_HOME:-${HOME}/.config}/containers
+    cat > ${XDG_CONFIG_HOME:-${HOME}/.config}/containers/containers.conf <<EOF
+    [containers]
+    label = false
+
+    [engine]
+    compose_providers = ["/usr/bin/docker-compose"]
+    compose_warning_logs = false
+    EOF
+    ```
+
+    After following the above steps, the VM can be used to work through the steps in this guide.
+
+    When finished with the Lima VM, stop it by running the following on the host
+
+    ```shell
+    limactl stop f7t-podman
+    ```
+
 [podman]: https://podman.io/
 [docker]: https://www.docker.com/
 [nerdctl]: https://github.com/containerd/nerdctl
@@ -77,6 +134,10 @@ In this demo, the tools in **bold** above are used, but the instructions should 
 [git]: https://git-scm.com/
 [python]: https://www.python.org/
 [base64-gnu-coreutils]: https://www.gnu.org/software/coreutils/manual/html_node/base64-invocation.html
+[lima-vm]: https://lima-vm.io
+[installation-lima-vm]: https://lima-vm.io/docs/installation/
+[homebrew]: https://brew.sh
+[podman-template-lima-vm]: https://github.com/lima-vm/lima/blob/master/templates/podman.yaml
 
 ## 1. Deploy the environment
 
