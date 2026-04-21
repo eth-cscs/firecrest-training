@@ -243,7 +243,7 @@ The result will look something like the following
 }
 ```
 
-The access token is only valid for a short period minutes, so will need to be requested periodically. We can check the issued at (`iat`) and expiration time (`exp`) claims to see the length of time is 5 minutes:
+The access token is only valid for a short period of minutes, so will need to be requested periodically. We can check the issued at (`iat`) and expiration time (`exp`) claims to see the length of time is 5 minutes:
 
 ```console
 $ jq '[.iat, .exp] | map(todateiso8601)' <<<"$DECODED_PAYLOAD"
