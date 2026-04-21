@@ -316,15 +316,63 @@ The response is a JSON object containing partition information on cluster `clust
 }
 ```
 
-Submit a job to the `cluster-slurm-ssh` cluster using the `/compute/{system_name}/jobs` endpoint
+Submit a job to the `cluster-slurm-ssh` cluster using the `/compute/{system_name}/jobs` endpoint. The job is submitted by a `POST` request to this endpoint with a JSON body:
 
-<!-- TODO -->
+```shell
+curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" --json @- http://localhost:8000/compute/cluster-slurm-ssh/jobs <<"EOF"
+{
+  "job": {
+    "script": "#!/bin/bash\necho \"Hello world from $(hostname)\"\nsleep 600\n",
+    "working_directory": "/home/fireuser",
+    "standoutOutput": "test_job.out"
+  }
+}
+EOF
+```
 
-View the contents of the job's output file using the `filesystem/cluster-slurm-ssh/ops/view` endpoint
+This will return the job ID.
+We can inspect the job is running and the contents of the output file by running commands inside the Slurm container, e.g.
 
-<!-- TODO -->
+```shell-session
+$ podman compose -p firecrest-v2 exec slurm squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+                 1    part01   sbatch fireuser  R       0:59      1 localhost
+```
 
-In this demo we have used `curl` and `jq` to briefly explore the FirecREST API presented in the containerised environment. When developing in Python, the [PyFirecREST][pyfirecrest-github] library provides a convenient Python wrapper for working with the API, but fundamentally any tool, language, or library capable of making HTTP requests and parsing JSON responses can be used.
+```shell-session
+$ podman compose -p firecrest-v2 exec slurm cat /home/fireuser/slurm-1.out
+Hello world from slurm
+```
+
+The same information can be acquired through calls to the FirecREST API endpoints `/compute/{system_name}/jobs/{job_id}` and `/compute/{system_name}/ops/view`, e.g.
+
+```shell-session
+$ curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  https://localhost:8000/compute/cluster-slurm-ssh/jobs/1 \
+  | jq '.jobs[] | pick(.jobId, .name, .status)'
+{
+  "jobId": "1",
+  "name": "sbatch",
+  "status": {
+    "state": "RUNNING",
+    "stateReason": "None",
+    "exitCode": 0,
+    "interruptSignal": 0
+  }
+}
+```
+
+```shell-session
+$ curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  --url-query "path=/home/fireuser/test_job.out" \
+  http://localhost:8000/filesystem/cluster-slurm-ssh/ops/view \
+  | jq '.'
+{
+  "output": "Hello world from slurm\n"
+}
+```
+
+In this short demo we have used `curl` and `jq` to briefly explore the FirecREST API presented in the containerised environment. When developing in Python, the [PyFirecREST][pyfirecrest-github] library provides a convenient Python wrapper for working with the API, but fundamentally any tool, language, or library capable of making HTTP requests and parsing JSON responses can be used.
 
 [pyfirecrest-github]: https://github.com/eth-cscs/pyfirecrest
 
