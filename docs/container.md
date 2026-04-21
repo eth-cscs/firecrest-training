@@ -380,7 +380,9 @@ In this short demo we have used `curl` and `jq` to briefly explore the FirecREST
 
 We can also access the web interfaces and APIs of other service components.
 
-Open the Keycloak web UI by going to <http://localhost:8080/auth>
+### Identity provider
+
+Open the Keycloak web UI by going to <http://localhost:8080/auth> in a web browser
 
 ![Screenshot of web browser showing Keycloak login page](imgs/keycloak-login-page.png)
 
@@ -397,6 +399,40 @@ You can log in to the containerised Keycloak service with preconfigured admin cr
 This is useful for exploring and developing IAM configuration associated with FirecREST. For example, opening the "Clients" page in the realm "kcrealm" will show OpenID Connect clients configured for use with FirecREST.
 
 ![Screenshot of web browser showing list of clients configured for the realm "kcrealm"](imgs/keycloak-kcrealm-clients.png)
+
+### Object storage
+
+Open the MinIO Console UI by going to <http://localhost:9001> in a web browser
+
+![Screenshot of web browser showing Keycloak login page](imgs/minio-login-page.png)
+
+You can log in to the containerised MinIO service with preconfigured root access key ID and secret key.
+
+!!! info "MinIO root credentials"
+    For the containerised development environment, MinIO root credentials are set to
+
+    **Access key ID:** storage_access_key  
+    **Secret access key:** storage_secret_key
+
+    In production secure, secret credentials should be used!
+
+This is useful for exploring how FirecREST uses the S3 storage backend. For example, initiating an asynchronous upload using the `/filesystem/{system_name}/transfer/upload` endpoint will result in the creation of a new bucket in the backend storage:
+
+```shell
+curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" --json @- \
+  http://localhost:8000/filesystem/cluster-slurm-ssh/transfer/upload <<"EOF"
+{
+  "path": "/home/fireuser/upload.bin",
+  "account": "users",
+  "transfer_directives": {
+    "transfer_method": "s3",
+    "file_size": 1073741824
+  }
+}
+EOF
+```
+
+![Screenshot of web browser showing list of buckets available in MinIO instance](imgs/minio-object-browser.png)
 
 ## 6. Clean up
 
