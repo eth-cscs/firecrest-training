@@ -501,7 +501,7 @@ EOF
 
 ## 6. Clean up
 
-Stop the Compose project and remove associated resources
+Stop the Compose project and remove associated resources:
 
 ```shell
 podman compose -p firecrest-v2 down
@@ -509,4 +509,8 @@ podman compose -p firecrest-v2 down
 
 ## Epilogue
 
-<!-- TODO -->
+In this demo we have briefly explored the containerised Compose environment distributed with FirecREST v2.
+
+We have seen how this environment integrates the FirecREST API server with other model supercomputing infrastructure components, enabling evaluation, testing, and development to take place in a local context (e.g. on your laptop!).
+
+We hope that this brief tour will provide inspiration for you to start experimenting and building with FirecREST in the containerised environment yourself.
