@@ -263,16 +263,20 @@ $ jq 'pick(.iat, .exp) | map_values(todateiso8601)' <<<"$DECODED_PAYLOAD"
 
 The access token can be used authorize access to FirecREST API endpoints.
 
-Call the `/status/systems` endpoint using bearer authorization
+Call the `/status/systems` endpoint, passing the access token in the HTTP Authorization request header using the [bearer scheme][bearer-authz-rfc6750]
+
+[bearer-authz-rfc6750]: https://datatracker.ietf.org/doc/html/rfc6750
 
 ```shell
-curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" http://localhost:8000/status/systems
+curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  http://localhost:8000/status/systems
 ```
 
 This will produce a lot of output, so it is helpful to filter down to the information we are interested in, e.g. cluster names
 
 ```shell-session
-$ curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" http://localhost:8000/status/systems | jq '.systems[] | .name'
+$ curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  http://localhost:8000/status/systems | jq '.systems[] | .name'
 "cluster-slurm-api"
 "cluster-slurm-ssh"
 "cluster-pbs"
@@ -281,7 +285,8 @@ $ curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" http://localhost:8000/stat
 Find information about the partitions on `cluster-slurm-ssh` by calling the `/status/{system_name}/partitions` endpoint
 
 ```shell
-curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" http://localhost:8000/status/cluster-slurm-ssh/partitions | jq '.'
+curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  http://localhost:8000/status/cluster-slurm-ssh/partitions | jq '.'
 ```
 
 The response is a JSON object containing partition information on cluster `cluster-slurm-ssh`
