@@ -3,9 +3,9 @@
   "build": {
     "dockerfile": "Containerfile"
   },
-  "forwardPorts": [8000],
+  "forwardPorts": [8800],
   "portsAttributes": {
-    "8000": {
+    "8800": {
       "label": "mkdocs serve",
       "onAutoForward": "notify"
     }
@@ -18,7 +18,7 @@
     }
   ],
   "postCreateCommand": "uv venv --allow-existing --no-cache --prompt docs --no-project && uv pip install --no-cache -r docs/requirements.txt",
-  "postAttachCommand": "uv run --no-cache mkdocs serve --livereload --clean --dev-addr=127.0.0.1:8000",
+  "postAttachCommand": "uv run --no-cache mkdocs serve --livereload --clean --dev-addr=127.0.0.1:8800",
   "customizations": {
     "vscode": {
       "extensions": [
