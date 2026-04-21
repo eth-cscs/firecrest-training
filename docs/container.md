@@ -19,15 +19,15 @@
 
 ## Introduction
 
-The FirecREST repository contains the definition for a preconfigured containerized FirecREST environment which can deployed locally.
+The FirecREST repository contains the definition for a preconfigured containerized FirecREST environment which can be deployed locally.
 
-In addition to FirecREST, the environment includes a minimal set of networked containers representing a simple API-accessible supercomputing infrastructure: IAM service, S3 compatible storage, SSH certificate authority, batch compute cluster.
+In addition to FirecREST, the environment includes a minimal set of networked containers representing a simple API-accessible supercomputing infrastructure: IAM service, S3 compatible storage, batch compute cluster.
 
 The environment is defined using the [Compose specification][compose-spec], and can be deployed locally using a Compose-compatible tool, such as [Docker Compose][docker-compose]
 
-The containerized is useful for
+The containerized environment is useful for
 
-* Understanding of how FirecREST interacts with other infrastructure components
+* Understanding how FirecREST interacts with other infrastructure components in a supercomputing centre
 * Exploring how FirecREST can be configured to interact with your own local supercomputing infrastructure
 * Testing and developing user workflows with FirecREST
 
@@ -38,7 +38,7 @@ The containerized is useful for
 
 This demo will provide attendees with an introduction to the containerized FirecREST environment, covering
 
-* Bringing up the containerized environment on a locally (e.g. on a laptop)
+* Bringing up the containerized environment locally (e.g. on a laptop)
 * The structure of the environment and relationship between components
 * Making API calls to FirecREST within the environment
 * Interacting with other components of the environment
@@ -141,7 +141,7 @@ In this demo, the tools in **bold** above are used, but the instructions should 
 
 ## 1. Deploy the environment
 
-Clone the [firecrest-v2 GitHub repository][firecrest-v2-github] and check out release v2.5.0
+Clone the [firecrest-v2 GitHub repository][firecrest-v2-github] and check out release v2.5.0:
 
 ```shell
 git clone https://github.com/eth-cscs/firecrest-v2.git
@@ -149,13 +149,13 @@ cd firecrest-v2
 git switch --detach 2.5.0
 ```
 
-Bring up the Compose project
+Bring up the Compose project:
 
 ```shell
 podman compose -f docker-compose.yml up
 ```
 
-This will pull and build the necessary container images and build the containerised environment as defined in [`docker-compose.yml`][docker-compose-firecrest-v2-github].
+This will pull and build the necessary container images and bring up the containerised environment as defined in [`docker-compose.yml`][docker-compose-firecrest-v2-github].
 The first time this is done, it may take a few minutes to completely bring up the environment.
 
 Confirm that the Compose project is running
@@ -171,10 +171,10 @@ firecrest-v2        running(5)          /path/to/firecrest-v2/docker-compose.yml
 
 ## 2. Explore the environment
 
-List the running containers in the project
+List the running containers in the project:
 
 ```shell-session
-$ podman compose -p firecrest-v2 ps       
+$ podman compose -p firecrest-v2 ps
 NAME                       IMAGE                                  COMMAND                  SERVICE     CREATED          STATUS          PORTS
 firecrest-v2-firecrest-1   docker.io/library/firecrestv2:latest   "sh -c python3 -Xfro…"   firecrest   16 minutes ago   Up 16 minutes   127.0.0.1:5678->5678/tcp, 127.0.0.1:8000->5000/tcp
 firecrest-v2-keycloak-1    quay.io/keycloak/keycloak:26.0.7       "start-dev --http-re…"   keycloak    16 minutes ago   Up 17 minutes   127.0.0.1:8080->8080/tcp, 8443/tcp, 127.0.0.1:9090->9000/tcp
@@ -187,7 +187,7 @@ The "Service" column shows how the containers are mapped to the [Compose service
 
 The "Ports" column shows which ports the containerised services are bound to.
 
-The services running in the Compose project map to the components of the full FirecREST architecture
+The services running in the Compose project map to the components of the full FirecREST architecture:
 
 ![Diagram illustrating architecture of FirecREST and integration with other infrastructure components](imgs/arch_complete_infra.svg)
 
@@ -197,7 +197,7 @@ The services running in the Compose project map to the components of the full Fi
 | Workload scheduler & manager | `slurm` and `pbs`     |
 | Object storage               | `minio`               |
 
-View the FirecREST Swagger UI in a web browser by going to <http://localhost:8000/docs>
+View the FirecREST Swagger UI in a web browser by going to <http://localhost:8000/docs>:
 
 ![Screenshot of web browser showing FirecREST Swagger UI](imgs/f7t-containerized-swagger-ui.png)
 
@@ -215,9 +215,9 @@ In order to make authorized calls to the FirecREST API, we need to acquire an Op
 
 In the containerised environment, FirecREST has been configured to validate the signature on the access token ([JSON Web Token, JWT][jwt.io]) using the public key advertised by Keycloak.
 
-Acquire an access token from Keycloak using `curl` by a request to Keycloak's [token endpoint][token-endpoint-keycloak] with the client credentials grant.
+We can acquire an access token from Keycloak using `curl` by making a request to Keycloak's [token endpoint][token-endpoint-keycloak] using the client credentials grant.
 
-First set some environment variables:
+First, set some environment variables:
 
 ```shell
 export FIRECREST_CLIENT_ID="firecrest-test-client"
@@ -236,7 +236,7 @@ export ACCESS_TOKEN=$(curl -s ${AUTH_TOKEN_URL} \
 ```
 
 !!! info "Client credentials flow"
-    Keycloak has been configured with a client with the OAuth 2.0 [client credentials flow][client-credentials-grant-rfc6749] enabled. This enables the client to exchange a client ID and secret for an access token.
+    Keycloak has been configured with a client that has the OAuth 2.0 [client credentials flow][client-credentials-grant-rfc6749] enabled. This enables a client application to exchange a client ID and secret for an access token.
 
     The client credentials flow is often used for machine-to-machine communication, where an application is authenticating on behalf of itself, rather than a human user, see the [auth0 docs for details][client-credentials-auth0-docs].
 
@@ -304,7 +304,7 @@ The result will look something like the following
 }
 ```
 
-The access token is only valid for a short period of minutes, so will need to be requested periodically. We can check the issued at (`iat`) and expiration time (`exp`) claims to see the length of time is 5 minutes:
+The access token is only valid for a few minutes, so will need to be requested periodically. We can check the issued at (`iat`) and expiration time (`exp`) claims to see the length of time the token is valid is 5 minutes:
 
 ```console
 $ jq 'pick(.iat, .exp) | map_values(todateiso8601)' <<<"$DECODED_PAYLOAD"
@@ -322,9 +322,9 @@ $ jq 'pick(.iat, .exp) | map_values(todateiso8601)' <<<"$DECODED_PAYLOAD"
 
 ## 4. Call the FirecREST API
 
-The access token can be used authorize access to FirecREST API endpoints.
+The access token authorizes access to FirecREST API endpoints.
 
-Call the `/status/systems` endpoint, passing the access token in the HTTP Authorization request header using the [bearer scheme][bearer-authz-rfc6750]
+Call the `/status/systems` endpoint, passing the access token in the HTTP Authorization request header using the [bearer scheme][bearer-authz-rfc6750]:
 
 [bearer-authz-rfc6750]: https://datatracker.ietf.org/doc/html/rfc6750
 
@@ -343,7 +343,7 @@ $ curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" \
 "cluster-pbs"
 ```
 
-Find information about the partitions on `cluster-slurm-ssh` by calling the `/status/{system_name}/partitions` endpoint
+Find information about the partitions on `cluster-slurm-ssh` by calling the `/status/{system_name}/partitions` endpoint:
 
 ```shell
 curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" \
@@ -380,28 +380,30 @@ The response is a JSON object containing partition information on cluster `clust
 Submit a job to the `cluster-slurm-ssh` cluster using the `/compute/{system_name}/jobs` endpoint. The job is submitted by a `POST` request to this endpoint with a JSON body:
 
 ```shell
-curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" --json @- http://localhost:8000/compute/cluster-slurm-ssh/jobs <<"EOF"
+curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  --json @- http://localhost:8000/compute/cluster-slurm-ssh/jobs <<"EOF"
 {
   "job": {
     "script": "#!/bin/bash\necho \"Hello world from $(hostname)\"\nsleep 600\n",
     "working_directory": "/home/fireuser",
-    "standoutOutput": "test_job.out"
+    "standardOutput": "test_job.out"
   }
 }
 EOF
 ```
 
 This will return the job ID.
-We can inspect the job is running and the contents of the output file by running commands inside the Slurm container, e.g.
+
+We can check that the job is running and inspect the contents of the output file by running commands inside the Slurm container, e.g.
 
 ```shell-session
-$ podman compose -p firecrest-v2 exec slurm squeue
+$ podman compose -p firecrest-v2 exec slurm squeue --jobs 1
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
                  1    part01   sbatch fireuser  R       0:59      1 localhost
 ```
 
 ```shell-session
-$ podman compose -p firecrest-v2 exec slurm cat /home/fireuser/slurm-1.out
+$ podman compose -p firecrest-v2 exec slurm cat /home/fireuser/test_job.out
 Hello world from slurm
 ```
 
@@ -409,7 +411,7 @@ The same information can be acquired through calls to the FirecREST API endpoint
 
 ```shell-session
 $ curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  https://localhost:8000/compute/cluster-slurm-ssh/jobs/1 \
+  http://localhost:8000/compute/cluster-slurm-ssh/jobs/1 \
   | jq '.jobs[] | pick(.jobId, .name, .status)'
 {
   "jobId": "1",
@@ -433,7 +435,9 @@ $ curl -sS -H "Authorization: Bearer ${ACCESS_TOKEN}" \
 }
 ```
 
-In this short demo we have used `curl` and `jq` to briefly explore the FirecREST API presented in the containerised environment. When developing in Python, the [PyFirecREST][pyfirecrest-github] library provides a convenient Python wrapper for working with the API, but fundamentally any tool, language, or library capable of making HTTP requests and parsing JSON responses can be used.
+In this short demo we have used `curl` and `jq` to briefly explore the FirecREST API presented in the containerised environment.
+This demonstrates that any tool, language, or library capable of making HTTP requests and parsing JSON responses can be used to work with FirecREST.
+When developing in Python, the [PyFirecREST][pyfirecrest-github] library provides a convenient Python wrapper for working with the API.
 
 [pyfirecrest-github]: https://github.com/eth-cscs/pyfirecrest
 
