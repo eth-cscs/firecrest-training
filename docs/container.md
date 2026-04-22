@@ -42,7 +42,7 @@ This demo will provide attendees with an introduction to the containerized Firec
 * Making API calls to FirecREST within the environment
 * Interacting with other components of the environment
 
-After the session, attendees will be equipped to deploy the environment for themselves and explore the capabilities of FirecREST in self-contained environment.
+After the session, attendees will be equipped to deploy the environment for themselves and explore the capabilities of FirecREST in a self-contained environment.
 
 ## 0. Setup
 
