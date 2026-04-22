@@ -60,7 +60,7 @@ In this demo, the tools in **bold** above are used, but the instructions should 
 !!! note "`podman compose`"
     This demo uses the Podman container engine and Docker Compose orchestrator using the [`podman compose`][podman-compose-command-man-page] command. Docker Compose is the reference implementation of the [Compose spec][compose-spec] and widely supported.
 
-    Confusingly, running the `podman compose` command from does not imply using the [Podman Compose][podman-compose] orchestrator. The `podman compose` command will default to using Docker Compose as orchestrator if available on the system (but can also use Podman Compose as orchestrator).
+    Confusingly, running the `podman compose` command does not imply using the [Podman Compose][podman-compose] orchestrator. The `podman compose` command will default to using Docker Compose as orchestrator if available on the system (but can also use Podman Compose as orchestrator).
 
 ??? info "Quick start: Lima"
     [Lima][lima-vm] is a tool for easily launching and managing virtual machines.
