@@ -7,7 +7,6 @@
     },
     "MD013": false,
     "MD014": false,
-    "MD046": false,
     "MD024": {
         "siblings_only": true
     },
