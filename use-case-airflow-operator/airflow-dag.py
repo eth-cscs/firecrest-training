@@ -14,9 +14,9 @@ from firecrest_airflow_operators import (FirecRESTSubmitOperator,
 
 
 workdir = '/path/to/local/dir'  # directory on local workstation
-remotedir = '/path/to/remote/dir'  # directory on remote HPC system
+remotedir = '/capstor/scratch/cscs/<username>'  # directory on remote HPC system
 username = '<username>'  # username on the HPC system
-system = '<system>'  # HPC system name
+system = 'daint'  # HPC system name
 
 job_script = """#!/bin/bash -l
 
@@ -24,6 +24,8 @@ job_script = """#!/bin/bash -l
 #SBATCH --output=slurm-%j.out
 #SBATCH --time=00:05:00
 #SBATCH --nodes=1
+#SBATCH --reservation=cug26
+#SBATCH --account=ws-iram-cug2026-tutorial
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
