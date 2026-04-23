@@ -2,15 +2,19 @@
 
 ## HPC Environment
 
-For this tutorial, use the following system information:
+For this tutorial, use the following parameters:
 
-| Parameter | Value |
-|-----------|-------|
-| System | `daint` |
-| Scheduler reservation | TBD (use in `#SBATCH --reservation=<reservation>`) |
-| Filesystem | `/capstor/scratch/cscs/<username>` |
+| Parameter | Value | Hint |
+|-----------|-------|------|
+| System | `daint` | |
+| Scheduler account | `ws-iram-cug2026-tutorial` | always use `#SBATCH --account=ws-iram-cug2026-tutorial` |
+| Scheduler reservation | `cug26` | use in `#SBATCH --reservation=cug26` to always get resources |
+| Filesystem | `/capstor/scratch/cscs/<username>` |  |
 
-!!! note
+!!! warning
+    When submitting a job always use `#SBATCH --account=ws-iram-cug2026-tutorial` otherwise the scheduler job will fail
+
+!!! tip
     FirecREST does not use root execution or impersonation. All calls are made with your user credentials. See the [architecture documentation](https://eth-cscs.github.io/firecrest-v2/setup/arch/systems/) for more information.
 
 ## Local Environment Setup
@@ -36,7 +40,7 @@ Copy the environment template and fill in your credentials:
 
 Edit `.env` with your **Consumer Key** and **Consumer Secret**
 
-!!! example "Update the `.env` file with the credentials obtained in [Setup](../setup.md#get-your-api-keys)"
+!!! example "Update the `.env` file with the credentials obtained in [Setup](./setup.md#get-your-api-keys)"
     ```bash
     export FIRECREST_CLIENT_ID="<Consumer-Key>" # <-- UPDATE
     export FIRECREST_CLIENT_SECRET="<Consumer-Secret>" # <-- UPDATE
@@ -109,7 +113,7 @@ Open [`demo-exercises/pyfirecrest_example.py`](https://github.com/eth-cscs/firec
     By installing PyFirecREST, it comes along the FirecREST CLI, a command line interface to access HPC resources from a terminal.
     More information about FirecREST CLI in this [documentation](https://pyfirecrest.readthedocs.io/en/stable/tutorial_cli.html).
 
-Start by checking the command options:
+### Start by checking the command options
 
 ???+ example "Check command options"
 
@@ -124,7 +128,7 @@ Start by checking the command options:
     (...)
     ```
 
-Check the command version:
+### Check the command version
 
 ??? example "Check command version"
 
@@ -133,7 +137,7 @@ Check the command version:
     FirecREST CLI Version: 3.7.1
     ```
 
-List of systems available in this instance:
+### List of systems available in this instance
 
 ??? example "List systems"
 
@@ -171,28 +175,28 @@ List of systems available in this instance:
     (···)
     ```
 
-Verify the username on the remote system:
+### Verify the username on the remote system
 
 ??? example "Verify username"
 
     ```bash
     $ (pyfirecrest-demo-env) firecrest id --system daint
-    uid=10001(course-user) gid=1999(cug-training) groups=1999(cug-training)
+    uid=99999(course_99999) gid=1209(ws-iram-cug2026-tutorial) groups=1209(ws-iram-cug2026-tutorial)
     ```
 
-List directories in a filesystem:
+### List directories in a filesystem
 
 ??? example "List directories"
 
     ```bash
-    $ (pyfirecrest-demo-env) firecrest ls --system daint $BASE_DIRECTORY/course-user
+    $ (pyfirecrest-demo-env) firecrest ls --system daint $BASE_DIRECTORY/course_99999
     [
         {
             "name": "dir01",
             "type": "d",
             "linkTarget": null,
-            "user": "course-user",
-            "group": "cug-training",
+            "user": "course_99999",
+            "group": "ws-iram-cug2026-tutorial",
             "permissions": "rwxr-x---+",
             "lastModified": "2026-04-11T09:28:18",
             "size": "4096"
@@ -201,8 +205,19 @@ List directories in a filesystem:
             "name": "file02",
             "type": "-",
             "linkTarget": null,
-            "user": "course-user",
+            "user": "course_99999",
         (...)
+    ```
+
+### Submit a job in the scheduler
+
+??? example "Submit job"
+    ```bash
+    $ (pyfirecrest-demo-env) firecrest submit --system daint \
+    --working-dir $BASE_DIRECTORY/course_99999 ./examples/script.sh
+    {
+        "jobId": "1234567"
+    }
     ```
 
 !!! tip
@@ -210,4 +225,4 @@ List directories in a filesystem:
 
 ---
 
-[:material-arrow-left: Back: Setup](./setup.md){ .md-button } [Next step: Demo use cases :material-arrow-right:](../use-cases){ .md-button .md-button--primary }
+[:material-arrow-left: Back: Setup](./setup.md){ .md-button } [Next step: Demo use cases :material-arrow-right:](./use-cases/index.md){ .md-button .md-button--primary }

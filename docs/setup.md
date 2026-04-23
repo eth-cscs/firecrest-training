@@ -23,7 +23,7 @@ Participants will be guided by the instructors through these steps:
 2. Open your web browser and navigate to <https://developer.cscs.ch> and set up MFA using your smartphone.
 3. Once MFA is configured, you will be able to see the API `FirecREST-HPC v2` in the Developer Portal.
 4. Click on **Applications** at the top of the page, then click on **DefaultApplication**.
-5. On the left panel, click on **Subscriptions**. Click **:material-plus-circle-outline: Subscribe APIs** and subscribe to `FirecREST-HPC v2`.
+5. On the left panel, click on **Subscriptions**. Click **:material-plus-circle-outline: Subscribe APIs** and subscribe to `FirecREST-HPC v2`, chosing `Platinum` **Subscription Status**.
 6. On the left panel, click on **Production Keys**, then click **Generate Keys**.
 
 After this, you will see the **Consumer Key** and **Consumer Secret** -- you will need them for the next steps.
@@ -33,7 +33,7 @@ After this, you will see the **Consumer Key** and **Consumer Secret** -- you wil
 
 ## Test the Setup
 
-1. On the **Production Keys** view, click **Generate Access Token**, then **Generate**, and copy the access token.
+1. On the **Production Keys** view, click **Generate Access Token**, then **Generate**, and finally **:fontawesome-solid-copy:** the access token.
 2. Navigate to the [FirecREST-HPC API OpenAPI specification](https://api.cscs.ch/hpc/firecrest/v2/docs).
 3. Click the **Authorize  :material-lock-open:** button on the right.
 4. Under **HTTPBearer (http, Bearer)**, paste the access token and click **Authorize**.
