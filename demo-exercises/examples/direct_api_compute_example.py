@@ -28,7 +28,7 @@ with open(local_path, 'r') as f:
     data = {
         'job': {
             'script': f.read(),
-            'working_directory': '/scratch/snx3000/eirinik',
+            'working_directory': '/capstor/scratch/cscs/<username>',
         }
     }
 

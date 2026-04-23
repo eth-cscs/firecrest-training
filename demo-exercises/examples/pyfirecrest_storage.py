@@ -20,7 +20,7 @@ client = f7t.v2.Firecrest(
 )
 
 # This call will only start the transfer of the file to the staging area
-down_obj = client.external_download("daint", "/scratch/snx3000/eirinik/a_file.txt")
+down_obj = client.external_download("daint", "/capstor/scratch/cscs/<username>/a_file.txt")
 
 print(type(down_obj))
 
