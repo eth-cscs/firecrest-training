@@ -53,6 +53,7 @@ def main():
     parser.add_argument("--branch", default="main", help="branch to be tested")
     parser.add_argument("--account", default="", help="scheduler account to be tested")
     parser.add_argument("--repo", help="repository to be tested")
+    parser.add_argument("--reservation", help="scheduler reservation to be tested")
 
     args = parser.parse_args()
     system_name = args.system
@@ -66,10 +67,10 @@ def main():
     AUTH_TOKEN_URL = check_mandatory_env_var("AUTH_TOKEN_URL")
     SYSTEM_WORKING_DIR = check_mandatory_env_var("SYSTEM_WORKING_DIR")
 
-    keycloak = # Set up the OIDC authentication
-    client = # Set up the FirecREST client
+    oidc = # Set up the OIDC authentication
+    f7t_client = # Set up the FirecREST client
 
-    all_systems = client. # Get the list of all available systems and print their names
+    all_systems = f7t_client. # Get the list of all available systems and print their names
 
     script_content = util.create_batch_script(
         repo=args.repo,

@@ -3,7 +3,7 @@
 #  Please, refer to the LICENSE file in the root directory.
 #  SPDX-License-Identifier: BSD-3-Clause
 #
-import firecrest as fc
+import firecrest as f7t
 import os
 import time
 import argparse
@@ -50,8 +50,9 @@ def main():
         "--system", default=os.environ.get("FIRECREST_SYSTEM"), help="choose system to run"
     )
     parser.add_argument("--branch", default="main", help="branch to be tested")
-    parser.add_argument("--account", default="csstaff", help="scheduler account to be tested")
+    parser.add_argument("--account", help="scheduler account to be tested")
     parser.add_argument("--repo", help="repository to be tested")
+    parser.add_argument("--reservation", help="scheduler reservation to be tested")
 
     args = parser.parse_args()
     system_name = args.system
@@ -65,10 +66,10 @@ def main():
     AUTH_TOKEN_URL = check_mandatory_env_var("AUTH_TOKEN_URL")
     SYSTEM_WORKING_DIR = check_mandatory_env_var("SYSTEM_WORKING_DIR")
 
-    keycloak = fc.ClientCredentialsAuth(CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_URL)
-    client = fc.v2.Firecrest(firecrest_url=FIRECREST_URL, authorization=keycloak)
+    oidc = f7t.ClientCredentialsAuth(CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_URL)
+    f7t_client = f7t.v2.Firecrest(firecrest_url=FIRECREST_URL, authorization=oidc)
 
-    all_systems = client.systems()
+    all_systems = f7t_client.systems()
     system_names = [system["name"] for system in all_systems]
     print(f"Available systems: {', '.join(system_names)}")
 
@@ -76,7 +77,7 @@ def main():
         repo=args.repo,
         num_nodes=2,
         account=args.account,
-        custom_modules=["cray", "cray-python"],
+        reservation=args.reservation,        
         branch=ref,
     )
 
@@ -95,7 +96,7 @@ def main():
     )
 
     if scheduler_health_info["healthy"]:
-        job = client.submit(
+        job = f7t_client.submit(
             system_name,
             working_dir=SYSTEM_WORKING_DIR,
             script_str=script_content,
@@ -103,7 +104,7 @@ def main():
         print(f"Submitted job: {job['jobId']}")
         while True:
             try:
-                poll_result = client.job_info(system_name, jobid=job["jobId"])
+                poll_result = f7t_client.job_info(system_name, jobid=job["jobId"])
             except FirecrestException as e:
                 if e.responses[-1].status_code == 404:
                     print(f"No available information yet for job {job['jobId']}")
@@ -128,11 +129,11 @@ def main():
         stderr_file_path = os.path.join(SYSTEM_WORKING_DIR, 'job.err')
 
         print(f"\nSTDOUT in {stdout_file_path}")
-        stdout_content = client.tail(system_name, path=stdout_file_path, num_lines=1000)["content"]
+        stdout_content = f7t_client.tail(system_name, path=stdout_file_path, num_lines=1000)["content"]
         print(stdout_content)
 
         print(f"\nSTDERR in {stderr_file_path}")
-        stderr_content = client.tail(system_name, path=stderr_file_path, num_lines=1000)["content"]
+        stderr_content = f7t_client.tail(system_name, path=stderr_file_path, num_lines=1000)["content"]
         print(stderr_content)
 
         # Some sanity checks:
