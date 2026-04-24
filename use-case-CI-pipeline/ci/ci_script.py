@@ -76,7 +76,7 @@ def main():
         repo=args.repo,
         num_nodes=2,
         account=args.account,
-        custom_modules=["cray", "cray-python"],
+        reservation=args.reservation,        
         branch=ref,
     )
 
@@ -97,7 +97,7 @@ def main():
     if scheduler_health_info["healthy"]:
         # Submit a job to the system with the provided script in `script_content` and
         # SYSTEM_WORKING_DIR is the directory where the job will run
-        job = client. # TODO
+        job = f7t_client. # TODO
         print(f"Submitted job: {job['jobId']}")
         while True:
             # Check the status of the job every 10 seconds and break
