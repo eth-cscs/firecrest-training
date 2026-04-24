@@ -50,4 +50,5 @@ jobs:
           AUTH_TOKEN_URL: ${{ secrets.F7T_TOKEN_URL }}
           SYSTEM_WORKING_DIR: ${{ vars.F7T_SYSTEM_WORKING_DIR }}
           SYSTEM_ACCOUNT: ${{ vars.SYSTEM_ACCOUNT }}
-        run: python use-case-CI-pipeline/ci/ci_script.py --system=${{ matrix.system_name }} --branch=${{ github.ref_name }} --repo=${{ github.server_url }}/${{ github.repository }}.git --account=${{ vars.SYSTEM_ACCOUNT }}
+          SYSTEM_RESERVATION: ${{ vars.SYSTEM_RESERVATION }}
+        run: python use-case-CI-pipeline/ci/ci_script.py --system=${{ matrix.system_name }} --branch=${{ github.ref_name }} --repo=${{ github.server_url }}/${{ github.repository }}.git --account=${{ vars.SYSTEM_ACCOUNT }} --reservation=${{ vars.SYSTEM_RESERVATION }}

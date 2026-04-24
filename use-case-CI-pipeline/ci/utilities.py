@@ -7,7 +7,7 @@
 
 
 def create_batch_script(
-    repo, num_nodes=1, account=None, custom_modules=None, branch="main", constraint=None
+    repo, num_nodes=1, account=None, branch="main", constraint=None, reservation=None
 ):
     script = f"""#!/bin/bash -l
 #SBATCH --job-name="ci_job"
@@ -23,6 +23,9 @@ def create_batch_script(
     if account:
         script += f"#SBATCH --account={account}\n"
 
+    if reservation:
+        script += f"#SBATCH --reservation={reservation}\n"
+
     script += f"""
 
 # Clone command will fail if the directory already exists
@@ -30,21 +33,20 @@ def create_batch_script(
 # every time
 # rm -rf firecrest-ci
 git clone -b {branch} {repo} firecrest-ci
-cd firecrest-ci
-"""
+cd firecrest-ci/use-case-CI-pipeline
 
-    if custom_modules:
-        script += f"module load {' '.join(custom_modules)}\n"
+unset PYTHONPATH
+export PYTHONUSERBASE="$(dirname "$(dirname "$(which python3)")")"
+python3 -m venv --system-site-packages testing-venv
 
-    script += """
-python -m venv testing-venv
-. ./testing-venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+source ./testing-venv/bin/activate
 
-python --version
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
 
-srun python -m timeit --setup='import mylib; import numpy as np; \
+python3 --version
+
+srun python3 -m timeit --setup='import mylib; import numpy as np; \
     p = np.arange(1000); q = np.arange(1000) + 2' \
     'mylib.simple_numpy_dist(p, q)'
 """
