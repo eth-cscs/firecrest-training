@@ -61,10 +61,32 @@ A successful setup returns a `200` response with a body similar to:
     }
     ```
 
+## What does the access token contain
+
+You can check the content of the access token by using this Python script
+
+??? example "Check access token content"
+    ```python
+    $ pip3 install jwt
+    $ python3
+    >>> import jwt, json
+    >>> token="..." # paste your token
+    >>> decoded_token = jwt.decode(token, options={"verify_signature": False})
+    >>> print(json.dumps(decoded_token, indent=2))
+    {
+        "exp": 1777282411,
+        (...)
+        "iss": "https://auth.cscs.ch/auth/realms/firecrest-clients",
+        (...)
+        "preferred_username": "course_XXXXX",
+        (...)
+        "username": "course_XXXXX"
+    }
+    ```
+
 !!! tip
     If you face issues setting up your API credentials, visit the [CSCS documentation](https://docs.cscs.ch/services/devportal/#getting-started) for clarification.
 
 ---
 
 [:material-arrow-left: Back: Introduction](index.md){ .md-button } [Next step: Demo exercises :material-arrow-right:](demo.md){ .md-button .md-button--primary }
-
