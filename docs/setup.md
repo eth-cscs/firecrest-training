@@ -76,7 +76,7 @@ You can check the content of the access token by using this Python script
     {
         "exp": 1777282411,
         (...)
-        "iss": "https://auth.cscs.ch/auth/realms/firecrest-clients",
+        "iss": "https://auth.cscs.ch/...",
         (...)
         "preferred_username": "course_XXXXX",
         (...)
