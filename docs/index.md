@@ -4,6 +4,12 @@
 
 **Date & Time:** April 27th, 2026 at 13h
 
+## Organizers
+
+- Juan Dorsch (ETH Zurich - Swiss National Supercomputing Centre)
+- James Womack (University of Bristol)
+- Juha Lehtonen (CSC - IT Center for Science)
+
 ???- quote "Abstract"
     > *The use of APIs in High Performance Computing (HPC) aims to simplify access and automate processes in traditional HPC settings. In this context, CSCS has developed FirecREST, a RESTful web interface that has proven to be efficient, streamlining the usage of CI/CD pipelines, UX/UI applications, workflow managers, and interactive computing across various HPC environments. This has been demonstrated on Alps, a Cray HPE EX machine featuring heterogeneous hardware including AMD and Nvidia CPUs and GPUs, as well as Grace-Hopper superchips. Moreover, FirecREST is being deployed in other HPE-powered Centres, such as Bristol Centre for Supercomputing (BriCS-UK); and the CSC - IT Center for Science, in Finland, that operates LUMI the HPE Cray EX supercomputer owned by the EuroHPC and hosted by a consortium of 11 European countries. The objectives of this tutorial are to facilitate automation of users’ workflows on HPC using a standard programming interface, and promote the usage of APIs on HPE centres in search of a common interface to run workflows across facilities. For further references, the FirecREST team has delivered training on FirecREST in 2023 and 2025 for CSCS users and the general public.*
 
