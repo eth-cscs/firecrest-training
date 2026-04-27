@@ -1,0 +1,1301 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="CUG-26 Tutorial – Programmatic Access to HPC resources with FirecREST API">
+      
+      
+      
+      
+        <link rel="prev" href="../use-cases/airflow/">
+      
+      
+      
+      <link rel="icon" href="../imgs/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+    
+    
+      
+        <title>FirecREST in your laptop - FirecREST Training</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#firecrest-in-your-laptop" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="FirecREST Training" class="md-header__button md-logo" aria-label="FirecREST Training" data-md-component="logo">
+      
+  <img src="../imgs/firecrest_logo_noletters.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            FirecREST Training
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              FirecREST in your laptop
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/eth-cscs/firecrest-training" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    eth-cscs/firecrest-training
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../setup/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Setup
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../demo/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Demo
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../use-cases/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Use Cases
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  FirecREST in your laptop
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="FirecREST Training" class="md-nav__button md-logo" aria-label="FirecREST Training" data-md-component="logo">
+      
+  <img src="../imgs/firecrest_logo_noletters.png" alt="logo">
+
+    </a>
+    FirecREST Training
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/eth-cscs/firecrest-training" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    eth-cscs/firecrest-training
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Demo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../use-cases/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Use Cases
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use-cases/ci-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CI/CD Pipeline
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use-cases/ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web UI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use-cases/airflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Airflow Operator
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    FirecREST in your laptop
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    FirecREST in your laptop
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-deploy-the-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Deploy the environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-explore-the-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Explore the environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-acquire-an-access-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Acquire an access token
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-call-the-firecrest-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Call the FirecREST API
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-interact-with-other-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Interact with other components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Interact with other components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#identity-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identity provider
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object storage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-clean-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Clean up
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#epilogue" class="md-nav__link">
+    <span class="md-ellipsis">
+      Epilogue
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      0. Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-deploy-the-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Deploy the environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-explore-the-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Explore the environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-acquire-an-access-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Acquire an access token
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-call-the-firecrest-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Call the FirecREST API
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-interact-with-other-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Interact with other components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Interact with other components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#identity-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      Identity provider
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object storage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-clean-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Clean up
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#epilogue" class="md-nav__link">
+    <span class="md-ellipsis">
+      Epilogue
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="firecrest-in-your-laptop">FirecREST in your laptop<a class="headerlink" href="#firecrest-in-your-laptop" title="Permanent link">&para;</a></h1>
+<!-- markdownlint-configure-file 
+{
+    "default": true,
+    "MD007": {
+        "indent": 4
+    },
+    "MD013": false,
+    "MD014": false,
+    "MD024": {
+        "siblings_only": true
+    },
+    "MD033": false,
+    "MD046": false,
+    "MD053": false
+}
+-->
+
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p>The FirecREST repository contains the definition for a preconfigured containerized FirecREST environment which can be deployed locally.</p>
+<p>In addition to FirecREST, the environment includes a minimal set of networked containers representing a simple API-accessible supercomputing infrastructure: IAM service, S3 compatible storage, batch compute cluster.</p>
+<p>The environment is defined using the <a href="https://compose-spec.io/">Compose specification</a>, and can be deployed locally using a Compose-compatible tool, such as <a href="https://docs.docker.com/compose/">Docker Compose</a></p>
+<p>The containerized environment is useful for</p>
+<ul>
+<li>Understanding how FirecREST interacts with other infrastructure components in a supercomputing centre</li>
+<li>Exploring how FirecREST can be configured to interact with your own local supercomputing infrastructure</li>
+<li>Testing and developing user workflows with FirecREST</li>
+</ul>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>This demo will provide attendees with an introduction to the containerized FirecREST environment, covering</p>
+<ul>
+<li>Bringing up the containerized environment locally (e.g. on a laptop)</li>
+<li>The structure of the environment and relationship between components</li>
+<li>Making API calls to FirecREST within the environment</li>
+<li>Interacting with other components of the environment</li>
+</ul>
+<p>After the session, attendees will be equipped to deploy the environment for themselves and explore the capabilities of FirecREST in a self-contained environment.</p>
+<h2 id="0-setup">0. Setup<a class="headerlink" href="#0-setup" title="Permanent link">&para;</a></h2>
+<p>The host on which the containerised environment is deployed requires the following:</p>
+<ol>
+<li>OCI container engine (<strong><a href="https://podman.io/">Podman</a></strong>, <a href="https://www.docker.com/">Docker</a>, <a href="https://github.com/containerd/nerdctl">nerdctl</a>)</li>
+<li>Compose compatible orchestrator (<strong><a href="https://docs.docker.com/compose/">Docker Compose</a></strong>, <a href="https://github.com/containers/podman-compose">Podman Compose</a>, <a href="https://github.com/containerd/nerdctl">nerdctl</a>)</li>
+<li>Tool for making HTTP requests (<strong><a href="https://curl.se/">curl</a></strong>, <a href="https://httpie.io/">httpie</a>, Python <a href="https://docs.python-requests.org/">requests</a>)</li>
+<li>Tool for parsing JSON (<strong><a href="https://jqlang.org/">jq</a></strong>, <a href="https://github.com/mikefarah/yq">yq</a>, Python standard library <a href="https://docs.python.org/3/library/json.html">json</a>)</li>
+<li>Tool for decoding base64 strings (<strong><a href="https://www.python.org/">Python</a></strong> interpreter, <a href="https://www.gnu.org/software/coreutils/manual/html_node/base64-invocation.html">base64</a>)</li>
+<li><strong><a href="https://git-scm.com/">Git</a></strong> version control system</li>
+</ol>
+<p>In this demo, the tools in <strong>bold</strong> above are used, but the instructions should generalise to other combinations.</p>
+<div class="admonition note">
+<p class="admonition-title"><code>podman compose</code></p>
+<p>This demo uses the Podman container engine and Docker Compose orchestrator using the <a href="https://docs.podman.io/en/latest/markdown/podman-compose.1.html"><code>podman compose</code></a> command. Docker Compose is the reference implementation of the <a href="https://compose-spec.io/">Compose spec</a> and widely supported.</p>
+<p>Confusingly, running the <code>podman compose</code> command does not imply using the <a href="https://github.com/containers/podman-compose">Podman Compose</a> orchestrator. The <code>podman compose</code> command will default to using Docker Compose as orchestrator if available on the system (but can also use Podman Compose as orchestrator).</p>
+</div>
+<details class="info">
+<summary>Quick start: Lima</summary>
+<p><a href="https://lima-vm.io">Lima</a> is a tool for easily launching and managing virtual machines.
+It can be used to quickly bring up a virtual machine suitable for deploying and working with the containerised environment:</p>
+<p><a href="https://lima-vm.io/docs/installation/">Install Lima</a>, e.g. from <a href="https://brew.sh">Homebrew</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>brew<span class="w"> </span>install<span class="w"> </span>lima
+</code></pre></div>
+<p>Create a VM instance from the <a href="https://github.com/lima-vm/lima/blob/master/templates/podman.yaml">Podman template</a> named <code>f7t-podman</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>limactl<span class="w"> </span>create<span class="w"> </span>--name<span class="o">=</span>f7t-podman<span class="w"> </span>--cpus<span class="o">=</span><span class="m">5</span><span class="w"> </span>--disk<span class="o">=</span><span class="m">50</span><span class="w"> </span>--memory<span class="o">=</span><span class="m">4</span><span class="w"> </span>--mount-none<span class="w"> </span>template:podman
+</code></pre></div>
+<p>Start the instance</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>limactl<span class="w"> </span>start<span class="w"> </span>f7t-podman
+</code></pre></div>
+<p>Start a shell in the instance</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>limactl<span class="w"> </span>shell<span class="w"> </span>f7t-podman
+</code></pre></div>
+<p>Upgrade packages and install Docker Compose (plus other useful tools)</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>sudo<span class="w"> </span>dnf<span class="w"> </span>--refresh<span class="w"> </span>upgrade
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>curl<span class="w"> </span>docker-compose<span class="w"> </span>git<span class="w"> </span>jq<span class="w"> </span>python3<span class="w"> </span>tmux<span class="w"> </span>vim-enhanced
+</code></pre></div>
+<p>Set some Podman configuration values</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>mkdir<span class="w"> </span>-v<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">XDG_CONFIG_HOME</span><span class="k">:-</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="p">/.config</span><span class="si">}</span>/containers
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>cat<span class="w"> </span>&gt;<span class="w"> </span><span class="si">${</span><span class="nv">XDG_CONFIG_HOME</span><span class="k">:-</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="p">/.config</span><span class="si">}</span>/containers/containers.conf<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="s">[containers]</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="s">label = false</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="s">[engine]</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="s">compose_providers = [&quot;/usr/bin/docker-compose&quot;]</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="s">compose_warning_logs = false</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="s">EOF</span>
+</code></pre></div>
+<p>After following the above steps, the VM can be used to work through the steps in this guide.</p>
+<p>When finished with the Lima VM, stop it by running the following on the host</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>limactl<span class="w"> </span>stop<span class="w"> </span>f7t-podman
+</code></pre></div>
+</details>
+<h2 id="1-deploy-the-environment">1. Deploy the environment<a class="headerlink" href="#1-deploy-the-environment" title="Permanent link">&para;</a></h2>
+<p>Clone the <a href="https://github.com/eth-cscs/firecrest-v2">firecrest-v2 GitHub repository</a> and check out release v2.5.0:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/eth-cscs/firecrest-v2.git
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span><span class="w"> </span>firecrest-v2
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>git<span class="w"> </span>switch<span class="w"> </span>--detach<span class="w"> </span><span class="m">2</span>.5.0
+</code></pre></div>
+<p>Bring up the Compose project:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>podman<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>docker-compose.yml<span class="w"> </span>up
+</code></pre></div>
+<p>This will pull and build the necessary container images and bring up the containerised environment as defined in <a href="https://github.com/eth-cscs/firecrest-v2/blob/2.5.0/docker-compose.yml"><code>docker-compose.yml</code></a>.
+The first time this is done, it may take a few minutes to completely bring up the environment.</p>
+<p>Confirm that the Compose project is running</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="gp">$ </span>podman<span class="w"> </span>compose<span class="w"> </span>ls
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="go">NAME                STATUS              CONFIG FILES</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="go">firecrest-v2        running(5)          /path/to/firecrest-v2/docker-compose.yml</span>
+</code></pre></div>
+<h2 id="2-explore-the-environment">2. Explore the environment<a class="headerlink" href="#2-explore-the-environment" title="Permanent link">&para;</a></h2>
+<p>List the running containers in the project:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="gp">$ </span>podman<span class="w"> </span>compose<span class="w"> </span>-p<span class="w"> </span>firecrest-v2<span class="w"> </span>ps
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="go">NAME                       IMAGE                                  COMMAND                  SERVICE     CREATED          STATUS          PORTS</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="go">firecrest-v2-firecrest-1   docker.io/library/firecrestv2:latest   &quot;sh -c python3 -Xfro…&quot;   firecrest   16 minutes ago   Up 16 minutes   127.0.0.1:5678-&gt;5678/tcp, 127.0.0.1:8000-&gt;5000/tcp</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="go">firecrest-v2-keycloak-1    quay.io/keycloak/keycloak:26.0.7       &quot;start-dev --http-re…&quot;   keycloak    16 minutes ago   Up 17 minutes   127.0.0.1:8080-&gt;8080/tcp, 8443/tcp, 127.0.0.1:9090-&gt;9000/tcp</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="go">firecrest-v2-minio-1       docker.io/minio/minio:latest           &quot;minio server /data …&quot;   minio       16 minutes ago   Up 17 minutes   127.0.0.1:9000-9001-&gt;9000-9001/tcp</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="go">firecrest-v2-pbs-1         docker.io/library/openpbs:23.06.06     &quot;/usr/bin/supervisord&quot;   pbs         16 minutes ago   Up 17 minutes   5432/tcp, 15004-15007/tcp, 127.0.0.1:15001-15003-&gt;15001-15003/tcp, 127.0.0.1:2223-&gt;22/tcp</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="go">firecrest-v2-slurm-1       docker.io/library/slurm:latest         &quot;&quot;                       slurm       16 minutes ago   Up 16 minutes   127.0.0.1:5665-5666-&gt;5665-5666/tcp, 127.0.0.1:6820-&gt;6820/tcp, 127.0.0.1:2222-&gt;22/tcp</span>
+</code></pre></div>
+<p>The "Service" column shows how the containers are mapped to the <a href="https://github.com/compose-spec/compose-spec/blob/main/05-services.md">Compose services</a> defined in <a href="https://github.com/eth-cscs/firecrest-v2/blob/2.5.0/docker-compose.yml"><code>docker-compose.yml</code></a>.</p>
+<p>The "Ports" column shows which ports the containerised services are bound to.</p>
+<p>The services running in the Compose project map to the components of the full FirecREST architecture:</p>
+<p><img alt="Diagram illustrating architecture of FirecREST and integration with other infrastructure components" src="../imgs/arch_complete_infra.svg" /></p>
+<table>
+<thead>
+<tr>
+<th>Architecture component</th>
+<th>Containerised service</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identity provider</td>
+<td><code>keycloak</code></td>
+</tr>
+<tr>
+<td>Workload scheduler &amp; manager</td>
+<td><code>slurm</code> and <code>pbs</code></td>
+</tr>
+<tr>
+<td>Object storage</td>
+<td><code>minio</code></td>
+</tr>
+</tbody>
+</table>
+<p>View the FirecREST Swagger UI in a web browser by going to <a href="http://localhost:8000/docs">http://localhost:8000/docs</a>:</p>
+<p><img alt="Screenshot of web browser showing FirecREST Swagger UI" src="../imgs/f7t-containerized-swagger-ui.png" /></p>
+<p>It is possible to make requests to the API endpoints from the Swagger UI. For example, selecting the "Try it out" button and then "Execute" button for the unauthenticated <code>/status/liveness/</code> endpoint makes a GET request and the response is displayed in the browser.</p>
+<p><img alt="Screenshot of web browser showing response from /status/liveness endpoint in FirecREST Swagger UI" src="../imgs/liveness-response-f7t-containerized-swagger-ui.png" /></p>
+<p>For this demo, we will be exploring the API using command line tools.</p>
+<h2 id="3-acquire-an-access-token">3. Acquire an access token<a class="headerlink" href="#3-acquire-an-access-token" title="Permanent link">&para;</a></h2>
+<p>In order to make authorized calls to the FirecREST API, we need to acquire an OpenID Connect/OAuth 2.0 access token.</p>
+<p>In the containerised environment, FirecREST has been configured to validate the signature on the access token (<a href="https://www.jwt.io/">JSON Web Token, JWT</a>) using the public key advertised by Keycloak.</p>
+<p>We can acquire an access token from Keycloak using <code>curl</code> by making a request to Keycloak's <a href="https://www.keycloak.org/securing-apps/oidc-layers#_token_endpoint">token endpoint</a> using the client credentials grant.</p>
+<p>First, set some environment variables:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">FIRECREST_CLIENT_ID</span><span class="o">=</span><span class="s2">&quot;firecrest-test-client&quot;</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">FIRECREST_CLIENT_SECRET</span><span class="o">=</span><span class="s2">&quot;wZVHVIEd9dkJDh9hMKc6DTvkqXxnDttk&quot;</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">AUTH_TOKEN_URL</span><span class="o">=</span><span class="s2">&quot;http://localhost:8080/auth/realms/kcrealm/protocol/openid-connect/token&quot;</span>
+</code></pre></div>
+<p>Then make a HTTP request to the token endpoint, extracting the access token from the response using <code>jq</code> and storing in an environment variable:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ACCESS_TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span><span class="si">${</span><span class="nv">AUTH_TOKEN_URL</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=client_credentials&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;client_id=</span><span class="si">${</span><span class="nv">FIRECREST_CLIENT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;client_secret=</span><span class="si">${</span><span class="nv">FIRECREST_CLIENT_SECRET</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.access_token&#39;</span><span class="k">)</span>
+</code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Client credentials flow</p>
+<p>Keycloak has been configured with a client that has the OAuth 2.0 <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.4">client credentials flow</a> enabled. This enables a client application to exchange a client ID and secret for an access token.</p>
+<p>The client credentials flow is often used for machine-to-machine communication, where an application is authenticating on behalf of itself, rather than a human user, see the <a href="https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow">auth0 docs for details</a>.</p>
+<p>During the <a href="../setup/">setup process</a> for accessing FirecREST in production, client credentials were generated using the <a href="https://developer.cscs.ch/">CSCS Developer portal</a>. </p>
+<p>For the containerised deployment, the client credentials used to obtain tokens from Keycloak for FirecREST API access are preconfigured and static:</p>
+<ul>
+<li><strong>Client ID</strong>: firecrest-test-client</li>
+<li><strong>Client secret</strong>: wZVHVIEd9dkJDh9hMKc6DTvkqXxnDttk</li>
+</ul>
+<p>In production secure, secret credentials should be used!</p>
+</div>
+<p>The JWT is a sequence of "."-delimited URL-safe base64-encoded values (<code>&lt;header&gt;.&lt;payload&gt;.&lt;signature&gt;</code>). We can decode the payload with a short Python script, and then pretty-print this with <code>jq</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nv">DECODED_PAYLOAD</span><span class="o">=</span><span class="k">$(</span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="s2">import os</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="s2">import base64</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="s2">payload = os.environ[&#39;ACCESS_TOKEN&#39;].split(&#39;.&#39;)[1]</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="s2">padding = &#39;=&#39; * ((4 - len(payload) % 4) % 4)</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="s2">print(base64.urlsafe_b64decode(payload + padding).decode())</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="s2">&quot;</span><span class="k">)</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>jq<span class="w"> </span><span class="o">&lt;&lt;&lt;</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">DECODED_PAYLOAD</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>The result will look something like the following</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p">{</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">&quot;exp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1776440235</span><span class="p">,</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="nt">&quot;iat&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1776439935</span><span class="p">,</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span><span class="nt">&quot;jti&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;795cad00-a876-4df4-aa6a-cbb1779b35fc&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">  </span><span class="nt">&quot;iss&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/auth/realms/kcrealm&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">  </span><span class="nt">&quot;aud&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span><span class="s2">&quot;Firecrest-v2&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span><span class="s2">&quot;account&quot;</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">  </span><span class="nt">&quot;sub&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fireuser&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">  </span><span class="nt">&quot;typ&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bearer&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">  </span><span class="nt">&quot;azp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;firecrest-test-client&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">  </span><span class="nt">&quot;acr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">  </span><span class="nt">&quot;realm_access&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">    </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">      </span><span class="s2">&quot;default-roles-kcrealm&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="w">      </span><span class="s2">&quot;offline_access&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a><span class="w">      </span><span class="s2">&quot;uma_authorization&quot;</span>
+<a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a><span class="w">    </span><span class="p">]</span>
+<a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a><span class="w">  </span><span class="nt">&quot;resource_access&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a><span class="w">    </span><span class="nt">&quot;account&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a><span class="w">      </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a><span class="w">        </span><span class="s2">&quot;manage-account&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a><span class="w">        </span><span class="s2">&quot;manage-account-links&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a><span class="w">        </span><span class="s2">&quot;view-profile&quot;</span>
+<a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a><span class="w">      </span><span class="p">]</span>
+<a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-14-30" name="__codelineno-14-30" href="#__codelineno-14-30"></a><span class="w">  </span><span class="nt">&quot;scope&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;firecrest-v2 profile email&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-31" name="__codelineno-14-31" href="#__codelineno-14-31"></a><span class="w">  </span><span class="nt">&quot;email_verified&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a id="__codelineno-14-32" name="__codelineno-14-32" href="#__codelineno-14-32"></a><span class="w">  </span><span class="nt">&quot;clientId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;firecrest-test-client&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-33" name="__codelineno-14-33" href="#__codelineno-14-33"></a><span class="w">  </span><span class="nt">&quot;clientHost&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.240.3&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-34" name="__codelineno-14-34" href="#__codelineno-14-34"></a><span class="w">  </span><span class="nt">&quot;preferred_username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;service-account-firecrest-test-client&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-35" name="__codelineno-14-35" href="#__codelineno-14-35"></a><span class="w">  </span><span class="nt">&quot;clientAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.240.3&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-36" name="__codelineno-14-36" href="#__codelineno-14-36"></a><span class="w">  </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fireuser&quot;</span>
+<a id="__codelineno-14-37" name="__codelineno-14-37" href="#__codelineno-14-37"></a><span class="p">}</span>
+</code></pre></div>
+<p>The access token is only valid for a few minutes, so will need to be requested periodically. We can check the issued at (<code>iat</code>) and expiration time (<code>exp</code>) claims to see the length of time the token is valid is 5 minutes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="gp">$ </span>jq<span class="w"> </span><span class="s1">&#39;pick(.iat, .exp) | map_values(todateiso8601)&#39;</span><span class="w"> </span><span class="o">&lt;&lt;&lt;</span><span class="s2">&quot;</span><span class="nv">$DECODED_PAYLOAD</span><span class="s2">&quot;</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="go">{</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="go">  &quot;iat&quot;: &quot;2026-04-21T09:24:49Z&quot;,</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="go">  &quot;exp&quot;: &quot;2026-04-21T09:29:49Z&quot;</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="go">}</span>
+</code></pre></div>
+<h2 id="4-call-the-firecrest-api">4. Call the FirecREST API<a class="headerlink" href="#4-call-the-firecrest-api" title="Permanent link">&para;</a></h2>
+<p>The access token authorizes access to FirecREST API endpoints.</p>
+<p>Call the <code>/status/systems</code> endpoint, passing the access token in the HTTP Authorization request header using the <a href="https://datatracker.ietf.org/doc/html/rfc6750">bearer scheme</a>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>curl<span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span>http://localhost:8000/status/systems
+</code></pre></div>
+<p>This will produce a lot of output, so it is helpful to filter down to the information we are interested in, e.g. cluster names</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="gp">$ </span>curl<span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span>http://localhost:8000/status/systems<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.systems[] | .name&#39;</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="go">&quot;cluster-slurm-api&quot;</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="go">&quot;cluster-slurm-ssh&quot;</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="go">&quot;cluster-pbs&quot;</span>
+</code></pre></div>
+<p>Find information about the partitions on <code>cluster-slurm-ssh</code> by calling the <code>/status/{system_name}/partitions</code> endpoint:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>curl<span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span>http://localhost:8000/status/cluster-slurm-ssh/partitions<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</code></pre></div>
+<p>The response is a JSON object containing partition information on cluster <code>cluster-slurm-ssh</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p">{</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="nt">&quot;partitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;part01&quot;</span><span class="p">,</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">      </span><span class="nt">&quot;cpus&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">      </span><span class="nt">&quot;totalNodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">      </span><span class="nt">&quot;partition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UP&quot;</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;part02&quot;</span><span class="p">,</span>
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="w">      </span><span class="nt">&quot;cpus&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="w">      </span><span class="nt">&quot;totalNodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="w">      </span><span class="nt">&quot;partition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UP&quot;</span>
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a><span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xfer&quot;</span><span class="p">,</span>
+<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a><span class="w">      </span><span class="nt">&quot;cpus&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a><span class="w">      </span><span class="nt">&quot;totalNodes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a><span class="w">      </span><span class="nt">&quot;partition&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UP&quot;</span>
+<a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-19-21" name="__codelineno-19-21" href="#__codelineno-19-21"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-19-22" name="__codelineno-19-22" href="#__codelineno-19-22"></a><span class="p">}</span>
+</code></pre></div>
+<p>Submit a job to the <code>cluster-slurm-ssh</code> cluster using the <code>/compute/{system_name}/jobs</code> endpoint. The job is submitted by a <code>POST</code> request to this endpoint with a JSON body:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>curl<span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span>--json<span class="w"> </span>@-<span class="w"> </span>http://localhost:8000/compute/cluster-slurm-ssh/jobs<span class="w"> </span>&lt;&lt;<span class="s2">&quot;EOF&quot;</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="o">{</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span><span class="s2">&quot;job&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">    </span><span class="s2">&quot;script&quot;</span>:<span class="w"> </span><span class="s2">&quot;#!/bin/bash\necho \&quot;Hello world from </span><span class="k">$(</span>hostname<span class="k">)</span><span class="s2">\&quot;\nsleep 600\n&quot;</span>,
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">    </span><span class="s2">&quot;working_directory&quot;</span>:<span class="w"> </span><span class="s2">&quot;/home/fireuser&quot;</span>,
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">    </span><span class="s2">&quot;standardOutput&quot;</span>:<span class="w"> </span><span class="s2">&quot;test_job.out&quot;</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">  </span><span class="o">}</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="o">}</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>EOF
+</code></pre></div>
+<p>This will return the job ID.</p>
+<p>We can check that the job is running and inspect the contents of the output file by running commands inside the Slurm container, e.g.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="gp">$ </span>podman<span class="w"> </span>compose<span class="w"> </span>-p<span class="w"> </span>firecrest-v2<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>slurm<span class="w"> </span>squeue<span class="w"> </span>--jobs<span class="w"> </span><span class="m">1</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="go">             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="go">                 1    part01   sbatch fireuser  R       0:59      1 localhost</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="gp">$ </span>podman<span class="w"> </span>compose<span class="w"> </span>-p<span class="w"> </span>firecrest-v2<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>slurm<span class="w"> </span>cat<span class="w"> </span>/home/fireuser/test_job.out
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="go">Hello world from slurm</span>
+</code></pre></div>
+<p>The same information can be acquired through calls to the FirecREST API endpoints <code>/compute/{system_name}/jobs/{job_id}</code> and <code>/compute/{system_name}/ops/view</code>, e.g.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="gp">$ </span>curl<span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">  </span>http://localhost:8000/compute/cluster-slurm-ssh/jobs/1<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.jobs[] | pick(.jobId, .name, .status)&#39;</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="go">{</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="go">  &quot;jobId&quot;: &quot;1&quot;,</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="go">  &quot;name&quot;: &quot;sbatch&quot;,</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="go">  &quot;status&quot;: {</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="go">    &quot;state&quot;: &quot;RUNNING&quot;,</span>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="go">    &quot;stateReason&quot;: &quot;None&quot;,</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="go">    &quot;exitCode&quot;: 0,</span>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="go">    &quot;interruptSignal&quot;: 0</span>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="go">  }</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="go">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="gp">$ </span>curl<span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">  </span>--url-query<span class="w"> </span><span class="s2">&quot;path=/home/fireuser/test_job.out&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">  </span>http://localhost:8000/filesystem/cluster-slurm-ssh/ops/view<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="go">{</span>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="go">  &quot;output&quot;: &quot;Hello world from slurm\n&quot;</span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="go">}</span>
+</code></pre></div>
+<p>In this short demo we have used <code>curl</code> and <code>jq</code> to briefly explore the FirecREST API presented in the containerised environment.
+This demonstrates that any tool, language, or library capable of making HTTP requests and parsing JSON responses can be used to work with FirecREST.
+When developing in Python, the <a href="https://github.com/eth-cscs/pyfirecrest">PyFirecREST</a> library provides a convenient Python wrapper for working with the API.</p>
+<h2 id="5-interact-with-other-components">5. Interact with other components<a class="headerlink" href="#5-interact-with-other-components" title="Permanent link">&para;</a></h2>
+<p>We can also access the web interfaces and APIs of other service components.</p>
+<h3 id="identity-provider">Identity provider<a class="headerlink" href="#identity-provider" title="Permanent link">&para;</a></h3>
+<p>Open the Keycloak web UI by going to <a href="http://localhost:8080/auth">http://localhost:8080/auth</a> in a web browser</p>
+<p><img alt="Screenshot of web browser showing Keycloak login page" src="../imgs/keycloak-login-page.png" /></p>
+<p>You can log in to the containerised Keycloak service with preconfigured admin credentials.</p>
+<div class="admonition info">
+<p class="admonition-title">Keycloak admin credentials</p>
+<p>For the containerised development environment, Keycloak admin credentials are set to</p>
+<p><strong>Username:</strong> admin<br />
+<strong>Password:</strong> admin2</p>
+<p>In production secure, secret credentials should be used!</p>
+</div>
+<p>This is useful for exploring and developing IAM configuration associated with FirecREST. For example, opening the "Clients" page in the realm "kcrealm" will show OpenID Connect clients configured for use with FirecREST.</p>
+<p><img alt="Screenshot of web browser showing list of clients configured for the realm &quot;kcrealm&quot;" src="../imgs/keycloak-kcrealm-clients.png" /></p>
+<h3 id="object-storage">Object storage<a class="headerlink" href="#object-storage" title="Permanent link">&para;</a></h3>
+<p>Open the MinIO Console UI by going to <a href="http://localhost:9001">http://localhost:9001</a> in a web browser</p>
+<p><img alt="Screenshot of web browser showing Keycloak login page" src="../imgs/minio-login-page.png" /></p>
+<p>You can log in to the containerised MinIO service with preconfigured root access key ID and secret key.</p>
+<div class="admonition info">
+<p class="admonition-title">MinIO root credentials</p>
+<p>For the containerised development environment, MinIO root credentials are set to</p>
+<p><strong>Access key ID:</strong> storage_access_key<br />
+<strong>Secret access key:</strong> storage_secret_key</p>
+<p>In production secure, secret credentials should be used!</p>
+</div>
+<p>This is useful for exploring how FirecREST uses the S3 storage backend. For example, initiating an asynchronous upload using the <code>/filesystem/{system_name}/transfer/upload</code> endpoint will result in the creation of a new bucket in the backend storage:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>curl<span class="w"> </span>-sS<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="si">${</span><span class="nv">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--json<span class="w"> </span>@-<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">  </span>http://localhost:8000/filesystem/cluster-slurm-ssh/transfer/upload<span class="w"> </span>&lt;&lt;<span class="s2">&quot;EOF&quot;</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="o">{</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">  </span><span class="s2">&quot;path&quot;</span>:<span class="w"> </span><span class="s2">&quot;/home/fireuser/upload.bin&quot;</span>,
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">  </span><span class="s2">&quot;account&quot;</span>:<span class="w"> </span><span class="s2">&quot;users&quot;</span>,
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">  </span><span class="s2">&quot;transfer_directives&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w">    </span><span class="s2">&quot;transfer_method&quot;</span>:<span class="w"> </span><span class="s2">&quot;s3&quot;</span>,
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="w">    </span><span class="s2">&quot;file_size&quot;</span>:<span class="w"> </span><span class="m">1073741824</span>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="w">  </span><span class="o">}</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="o">}</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>EOF
+</code></pre></div>
+<p><img alt="Screenshot of web browser showing list of buckets available in MinIO instance" src="../imgs/minio-object-browser.png" /></p>
+<h2 id="6-clean-up">6. Clean up<a class="headerlink" href="#6-clean-up" title="Permanent link">&para;</a></h2>
+<p>Stop the Compose project and remove associated resources:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>podman<span class="w"> </span>compose<span class="w"> </span>-p<span class="w"> </span>firecrest-v2<span class="w"> </span>down
+</code></pre></div>
+<h2 id="epilogue">Epilogue<a class="headerlink" href="#epilogue" title="Permanent link">&para;</a></h2>
+<p>In this demo we have briefly explored the containerised Compose environment distributed with FirecREST v2.</p>
+<p>We have seen how this environment integrates the FirecREST API server with other model supercomputing infrastructure components, enabling evaluation, testing, and development to take place in a local context (e.g. on your laptop!).</p>
+<p>We hope that this brief tour will provide inspiration for you to start experimenting and building with FirecREST in the containerised environment yourself.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.indexes", "navigation.top", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../js/open_in_new_tab.js"></script>
+      
+    
+  </body>
+</html>
